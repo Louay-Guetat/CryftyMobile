@@ -7,6 +7,10 @@ public class SubCategory {
     private int nbrNft;
     private Category category;
 
+    public SubCategory(){
+
+    }
+
     public SubCategory(int id,String name, String creationDate, int nbrNft, Category category) {
         this.id = id;
         this.name = name;

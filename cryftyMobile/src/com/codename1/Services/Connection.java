@@ -5,9 +5,11 @@
  */
 package com.codename1.Services;
 
+import com.codename1.entities.Category;
 import com.codename1.entities.Nft;
 import com.codename1.entities.NftComment;
 import com.codename1.Statics;
+import com.codename1.entities.SubCategory;
 import com.codename1.io.CharArrayReader;
 import com.codename1.io.ConnectionRequest;
 import com.codename1.io.JSONParser;
@@ -28,6 +30,9 @@ public class Connection {
 
     public ArrayList<Nft> nfts;
     public ArrayList<NftComment> comments;
+    public ArrayList<Category> categories;
+    public ArrayList<SubCategory> subCategories;
+    //public ArrayList<> currencies;
 
     public static Connection instance = null;
     public boolean resultOK;
@@ -86,6 +91,42 @@ public class Connection {
         });
         NetworkManager.getInstance().addToQueueAndWait(req);
         return nfts;
+    }
+
+    public ArrayList<Category> getAllCategories() {
+        req = new ConnectionRequest();
+        //String url = Statics.BASE_URL+"/tasks/";
+        String url = Statics.BASE_URL + "/category/AfficheCatJson";
+        System.out.println("===>" + url);
+        req.setUrl(url);
+        req.setPost(false);
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                categories = parseCategories(new String(req.getResponseData()));
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return categories;
+    }
+
+    public ArrayList<SubCategory> getAllSubCategories() {
+        req = new ConnectionRequest();
+        //String url = Statics.BASE_URL+"/tasks/";
+        String url = Statics.BASE_URL + "/category/AfficheSubCatJson";
+        System.out.println("===>" + url);
+        req.setUrl(url);
+        req.setPost(false);
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                subCategories = parseSubCategories(new String(req.getResponseData()));
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return subCategories;
     }
 
     public ArrayList<Nft> getNftByUser(int id){
@@ -279,6 +320,66 @@ public class Connection {
 
         }
         return nfts;
+    }
+
+    public ArrayList<Category> parseCategories(String jsonText) {
+        try {
+            categories = new ArrayList<>();
+            JSONParser j = new JSONParser();
+            Map<String, Object> tasksListJson
+                    = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
+            List<Map<String, Object>> list = (List<Map<String, Object>>) tasksListJson.get("root");
+
+            for (Map<String, Object> obj : list) {
+                Category category = new Category();
+                float id = Float.parseFloat(obj.get("id").toString());
+                category.setId((int) id);
+
+                category.setName(obj.get("name").toString());
+
+                category.setCreationDate(obj.get("creationDate").toString());
+
+                float nbrNft = Float.parseFloat(obj.get("nbrNft").toString());
+                category.setNbrNft((int)nbrNft);
+
+                float nbrSubCategories = Float.parseFloat(obj.get("nbrSubCategory").toString());
+                category.setNbrSubCategory((int)nbrSubCategories);
+
+                categories.add(category);
+            }
+        } catch (IOException ex) {
+
+        }
+        return categories;
+    }
+
+    public ArrayList<SubCategory> parseSubCategories(String jsonText) {
+        try {
+            subCategories = new ArrayList<>();
+            JSONParser j = new JSONParser();
+            Map<String, Object> tasksListJson
+                    = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
+            List<Map<String, Object>> list = (List<Map<String, Object>>) tasksListJson.get("root");
+
+            for (Map<String, Object> obj : list) {
+                SubCategory subCategory = new SubCategory();
+                float id = Float.parseFloat(obj.get("id").toString());
+                subCategory.setId((int) id);
+
+                subCategory.setName(obj.get("name").toString());
+
+                subCategory.setCreationDate(obj.get("creationDate").toString());
+
+                float nbrNft = Float.parseFloat(obj.get("nbrNft").toString());
+                subCategory.setNbrNft((int)nbrNft);
+
+
+                subCategories.add(subCategory);
+            }
+        } catch (IOException ex) {
+
+        }
+        return subCategories;
     }
 
 }

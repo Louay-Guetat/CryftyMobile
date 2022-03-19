@@ -2,10 +2,12 @@ package com.codename1.views;
 
 import com.codename1.Statics;
 import com.codename1.components.InfiniteProgress;
+import com.codename1.entities.Category;
 import com.codename1.entities.Nft;
 import com.codename1.Services.Connection;
 import com.codename1.capture.Capture;
 import com.codename1.components.SpanLabel;
+import com.codename1.entities.SubCategory;
 import com.codename1.io.MultipartRequest;
 import com.codename1.io.NetworkManager;
 import com.codename1.ui.*;
@@ -14,11 +16,12 @@ import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.uikit.pheonixui.BaseForm;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class AddNft extends BaseForm {
         String image;
-    public AddNft() {
+    public AddNft(Form previous) {
         setLayout(BoxLayout.y());
         setTitle("Add Nft");
         SpanLabel sp = new SpanLabel();
@@ -56,13 +59,19 @@ public class AddNft extends BaseForm {
         add(currency);
 
         ComboBox category = new ComboBox();
-        category.addItem("cat1");
+        ArrayList<Category> categories = Connection.getInstance().getAllCategories();
+        for(Category cat : categories){
+            category.addItem(cat.getName());
+        }
         Label lblCategory = new Label("Category");
         add(lblCategory);
         add(category);
 
         ComboBox subCategory = new ComboBox();
-        subCategory.addItem("cat1");
+        ArrayList<SubCategory> subCategories = Connection.getInstance().getAllSubCategories();
+        for(SubCategory subCat : subCategories){
+            subCategory.addItem(subCat.getName());
+        }
         Label lblSubCategory = new Label("SubCategory");
         add(lblSubCategory);
         add(subCategory);
@@ -121,6 +130,7 @@ public class AddNft extends BaseForm {
             NetworkManager.getInstance().addToQueueAndWait(cr);
             Dialog.show("Success", "Image uploaded", "OK", null);
         });
+        getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
     }
 
 }

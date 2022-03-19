@@ -16,8 +16,10 @@ public class Explore extends BaseForm {
     EncodedImage enc;
     Image imgs;
     ImageViewer imgv;
-    public Explore(){
+    Form current;
 
+    public Explore(Form previous){
+        current=this;
         ArrayList<Nft> nfts = Connection.getInstance().getAllNfts();
         for(Nft nft : nfts){
             try{
@@ -28,7 +30,10 @@ public class Explore extends BaseForm {
 
             Container c = new Container();
             c.setLayout(BoxLayout.y());
-            Button lblTitle = new Button(nft.getTitle());
+
+            Button btnTitle = new Button(nft.getTitle());
+            btnTitle.addActionListener((e)-> new afficheNft(current,nft.getId()).show());
+
             Label lblDescription = new Label(nft.getDescription());
             Label lblPrice = new Label(nft.getPrice()+"");
             Label lblCurrency = new Label(nft.getCurrency());
@@ -48,9 +53,10 @@ public class Explore extends BaseForm {
             imgs = URLImage.createToStorage(enc,url,url,URLImage.RESIZE_SCALE);
             imgv.setImage(imgs);
 
-            c.addAll(imgv,lblTitle,lblDescription,lblPrice,lblCurrency,lblDate,lblLikes,lblCategory,lblSubCategory,lblOwner,separ);
+            c.addAll(imgv,btnTitle,lblDescription,lblPrice,lblCurrency,lblDate,lblLikes,lblCategory,lblSubCategory,lblOwner,separ);
             add(c);
         }
+        getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
     }
 }
 

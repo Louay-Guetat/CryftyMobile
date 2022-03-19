@@ -27,7 +27,9 @@ import com.codename1.views.AddNft;
 import com.codename1.views.Explore;
 
 public class BaseForm extends Form {
+    Form current;
     public void installSidemenu(Resources res) {
+        current=this;
         Image selection = res.getImage("selection-in-sidemenu.png");
         
         Image inboxImage = null;
@@ -59,7 +61,8 @@ public class BaseForm extends Form {
         getToolbar().addCommandToSideMenu("Stats", statsImage, e -> new StatsForm(res).show());
         getToolbar().addCommandToSideMenu("Calendar", calendarImage, e -> new CalendarForm(res).show());
         getToolbar().addCommandToSideMenu("Map", null, e -> {});
-        getToolbar().addCommandToSideMenu("Trending", trendingImage, e -> new Explore().show());
+        getToolbar().addCommandToSideMenu("Explore", trendingImage, e -> new Explore(current).show());
+        getToolbar().addCommandToSideMenu("Add NFT", trendingImage, e -> new AddNft(current).show());
         getToolbar().addCommandToSideMenu("Settings", null, e -> {});
         getToolbar().addCommandToSideMenu("Wallets", walletsImage, e -> new WalletsForm().show());
 
