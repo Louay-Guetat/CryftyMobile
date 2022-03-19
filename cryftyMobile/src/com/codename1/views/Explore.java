@@ -1,0 +1,56 @@
+package com.codename1.views;
+
+import com.codename1.Services.Connection;
+import com.codename1.Statics;
+import com.codename1.components.ImageViewer;
+import com.codename1.entities.Nft;
+import com.codename1.ui.*;
+import com.codename1.ui.Form;
+import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.uikit.pheonixui.BaseForm;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class Explore extends BaseForm {
+    EncodedImage enc;
+    Image imgs;
+    ImageViewer imgv;
+    public Explore(){
+
+        ArrayList<Nft> nfts = Connection.getInstance().getAllNfts();
+        for(Nft nft : nfts){
+            try{
+                imgv = new ImageViewer(Image.createImage("/load.png"));
+            }catch(IOException ex){
+                Dialog.show("Error",ex.getMessage(),"ok",null);
+            }
+
+            Container c = new Container();
+            c.setLayout(BoxLayout.y());
+            Button lblTitle = new Button(nft.getTitle());
+            Label lblDescription = new Label(nft.getDescription());
+            Label lblPrice = new Label(nft.getPrice()+"");
+            Label lblCurrency = new Label(nft.getCurrency());
+            Label lblDate = new Label(nft.getCreationDate());
+            Label lblLikes = new Label(nft.getLikes()+"");
+            Label lblCategory = new Label(nft.getCategory());
+            Label lblSubCategory = new Label(nft.getSubCategory());
+            Label lblOwner = new Label(nft.getOwner());
+            Label separ = new Label("__________________");
+
+            try{
+                enc = EncodedImage.create("/load.png");
+            }catch(IOException ex){
+                Dialog.show("Error",ex.getMessage(),"ok",null);
+            }
+            String url = Statics.URL_REP_IMAGES + nft.getImage();
+            imgs = URLImage.createToStorage(enc,url,url,URLImage.RESIZE_SCALE);
+            imgv.setImage(imgs);
+
+            c.addAll(imgv,lblTitle,lblDescription,lblPrice,lblCurrency,lblDate,lblLikes,lblCategory,lblSubCategory,lblOwner,separ);
+            add(c);
+        }
+    }
+}
+

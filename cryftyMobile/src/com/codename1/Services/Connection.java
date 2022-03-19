@@ -1,16 +1,31 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.codename1.Services;
 
-import com.codename1.Statics;
 import com.codename1.entities.Nft;
 import com.codename1.entities.NftComment;
-import com.codename1.io.*;
+import com.codename1.Statics;
+import com.codename1.io.CharArrayReader;
+import com.codename1.io.ConnectionRequest;
+import com.codename1.io.JSONParser;
+import com.codename1.io.NetworkEvent;
+import com.codename1.io.NetworkManager;
 import com.codename1.ui.events.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ *
+ * @author LOUAY
+ */
 public class Connection {
+
     public ArrayList<Nft> nfts;
     public ArrayList<NftComment> comments;
 
@@ -32,16 +47,17 @@ public class Connection {
     public boolean addNft(Nft t) {
         System.out.println(t);
         System.out.println("********");
-        String url = Statics.BASE_URL + "/nft/AjoutNftJson?title=";
-
-        req.setUrl(url);
+        String url = Statics.BASE_URL + "/nft/AjoutNftJson?title="+t.getTitle()+"&description="+t.getDescription()
+                +"&price="+t.getPrice()+"&likes="+t.getLikes()+"&image="+t.getImage();
         req.setPost(false);
+        req.setUrl(url);
         req.addArgument("title", t.getTitle());
         req.addArgument("description", t.getDescription() + "");
         req.addArgument("price", t.getPrice()+"");
         req.addArgument("creationDate", t.getCreationDate()+ "");
         req.addArgument("image", t.getImage());
         req.addArgument("likes", t.getLikes() + "");
+        System.out.println(req.getUrl());
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
             public void actionPerformed(NetworkEvent evt) {

@@ -1,0 +1,127 @@
+package com.codename1.views;
+
+import com.codename1.Statics;
+import com.codename1.components.InfiniteProgress;
+import com.codename1.entities.Nft;
+import com.codename1.Services.Connection;
+import com.codename1.capture.Capture;
+import com.codename1.components.SpanLabel;
+import com.codename1.io.MultipartRequest;
+import com.codename1.io.NetworkManager;
+import com.codename1.ui.*;
+import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.events.ActionListener;
+import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.uikit.pheonixui.BaseForm;
+import java.io.IOException;
+import java.util.UUID;
+
+public class AddNft extends BaseForm {
+        String image;
+    public AddNft() {
+        setLayout(BoxLayout.y());
+        setTitle("Add Nft");
+        SpanLabel sp = new SpanLabel();
+        add(sp);
+        Container imageContainer = new Container();
+        imageContainer.setLayout(BoxLayout.xCenter());
+        Button btnUpload = new Button("Upload");
+        Label lblImage = new Label();
+        //lblImage.setIcon(icon);
+        imageContainer.add(lblImage);
+        add(btnUpload);
+        add(imageContainer);
+        Nft nft = new Nft();
+
+        TextField title = new TextField();
+        Label lblTitle = new Label("Titre");
+        add(lblTitle);
+        add(title);
+
+        TextArea description = new TextArea();
+        description.setHeight(200);
+        Label lblDescription = new Label("Description");
+        add(lblDescription);
+        add(description);
+
+        TextField price = new TextField();
+        Label lblPrice = new Label("Price: ");
+        add(lblPrice);
+        add(price);
+
+        Label lblCurrency = new Label("Currency");
+        ComboBox currency = new ComboBox();
+        currency.addItem("Bit");
+        add(lblCurrency);
+        add(currency);
+
+        ComboBox category = new ComboBox();
+        category.addItem("cat1");
+        Label lblCategory = new Label("Category");
+        add(lblCategory);
+        add(category);
+
+        ComboBox subCategory = new ComboBox();
+        subCategory.addItem("cat1");
+        Label lblSubCategory = new Label("SubCategory");
+        add(lblSubCategory);
+        add(subCategory);
+
+        Button submit = new Button("Submit");
+        add(submit);
+
+        submit.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent evt){
+                nft.setImage(image);
+                nft.setTitle(title.getText());
+                nft.setDescription(description.getText());
+                nft.setPrice(Float.parseFloat(price.getText()));
+                //nft.setCurrency(currency.getSelectedItem().toString());
+                //nft.setCategory(category.getSelectedItem().toString());
+                //nft.setSubCategory(subCategory.getSelectedItem().toString());
+                nft.setLikes(0);
+                //nft.setOwner();
+
+                if (Connection.getInstance().addNft(nft)){
+                    Dialog.show("success", "nft ajouté", "ok",null);
+                }
+                else{
+                    Dialog.show("error", "Request erroné", "ok",null);
+                }
+            }
+        });
+
+        btnUpload.addActionListener((evt) -> {
+            MultipartRequest cr = new MultipartRequest();
+            String filePath = Capture.capturePhoto(Display.getInstance().getDisplayWidth(), -1);
+
+            cr.setUrl(Statics.URL_UPLOAD);
+            cr.setPost(true);
+            String mime = "image/*";
+            try {
+                cr.addData("file", filePath, mime);
+            } catch (IOException ex) {
+                Dialog.show("Error", ex.getMessage(), "OK", null);
+            }
+            String uniqueID = UUID.randomUUID().toString();
+            String extension = "";
+
+            int i = filePath.lastIndexOf('.');
+            if (i > 0) {
+                extension = filePath.substring(i+1);
+            }
+            cr.setFilename("file", uniqueID+"."+extension);//any unique name you want
+            System.out.println(uniqueID+"."+extension);
+            image = uniqueID+"."+extension;
+            System.out.println(image);
+            InfiniteProgress prog = new InfiniteProgress();
+            Dialog dlg = prog.showInifiniteBlocking();
+            cr.setDisposeOnCompletion(dlg);
+            NetworkManager.getInstance().addToQueueAndWait(cr);
+            Dialog.show("Success", "Image uploaded", "OK", null);
+        });
+    }
+
+}
+

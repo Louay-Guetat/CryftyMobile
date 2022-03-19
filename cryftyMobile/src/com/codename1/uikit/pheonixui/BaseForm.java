@@ -23,12 +23,9 @@ import com.codename1.ui.*;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.util.Resources;
+import com.codename1.views.AddNft;
+import com.codename1.views.Explore;
 
-/**
- * Utility methods common to forms e.g. for binding the side menu
- *
- * @author Shai Almog
- */
 public class BaseForm extends Form {
     public void installSidemenu(Resources res) {
         Image selection = res.getImage("selection-in-sidemenu.png");
@@ -62,7 +59,7 @@ public class BaseForm extends Form {
         getToolbar().addCommandToSideMenu("Stats", statsImage, e -> new StatsForm(res).show());
         getToolbar().addCommandToSideMenu("Calendar", calendarImage, e -> new CalendarForm(res).show());
         getToolbar().addCommandToSideMenu("Map", null, e -> {});
-        getToolbar().addCommandToSideMenu("Trending", trendingImage, e -> new TrendingForm(res).show());
+        getToolbar().addCommandToSideMenu("Trending", trendingImage, e -> new Explore().show());
         getToolbar().addCommandToSideMenu("Settings", null, e -> {});
         getToolbar().addCommandToSideMenu("Wallets", walletsImage, e -> new WalletsForm().show());
 
