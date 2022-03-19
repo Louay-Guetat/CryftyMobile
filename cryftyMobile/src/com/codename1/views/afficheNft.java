@@ -53,7 +53,7 @@ public class afficheNft extends Form {
             Label lblCurrency = new Label(nft.getCurrency());
             Label lblDate = new Label(nft.getCreationDate());
             Label lblLikes = new Label(nft.getLikes() + "");
-            Label lblCategory = new Label(nft.getCategory());
+            Label lblCategory = new Label(nft.getCategory()+"");
             Label lblSubCategory = new Label(nft.getSubCategory());
             Label lblOwner = new Label(nft.getOwner());
             Label separ = new Label("______________");

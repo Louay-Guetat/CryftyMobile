@@ -1,6 +1,7 @@
 package com.codename1.views;
 
 import com.codename1.Statics;
+import com.codename1.components.ImageViewer;
 import com.codename1.components.InfiniteProgress;
 import com.codename1.entities.Category;
 import com.codename1.entities.Nft;
@@ -21,6 +22,9 @@ import java.util.UUID;
 
 public class AddNft extends BaseForm {
         String image;
+        EncodedImage enc;
+        Image imgs;
+        ImageViewer imgv;
     public AddNft(Form previous) {
         setLayout(BoxLayout.y());
         setTitle("Add Nft");
@@ -29,11 +33,18 @@ public class AddNft extends BaseForm {
         Container imageContainer = new Container();
         imageContainer.setLayout(BoxLayout.xCenter());
         Button btnUpload = new Button("Upload");
+        try{
+            imgv = new ImageViewer(Image.createImage("/load.png"));
+        }catch(IOException ex){
+            Dialog.show("Error",ex.getMessage(),"ok",null);
+        }
+
         Label lblImage = new Label();
         //lblImage.setIcon(icon);
         imageContainer.add(lblImage);
+        add(imgv);
         add(btnUpload);
-        add(imageContainer);
+
         Nft nft = new Nft();
 
         TextField title = new TextField();
@@ -63,15 +74,24 @@ public class AddNft extends BaseForm {
         for(Category cat : categories){
             category.addItem(cat.getName());
         }
+
         Label lblCategory = new Label("Category");
         add(lblCategory);
         add(category);
 
         ComboBox subCategory = new ComboBox();
         ArrayList<SubCategory> subCategories = Connection.getInstance().getAllSubCategories();
-        for(SubCategory subCat : subCategories){
-            subCategory.addItem(subCat.getName());
-        }
+        category.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                for(SubCategory subCat : subCategories){
+                    if(subCat.getCategory().equals("{id="+(category.getSelectedIndex()+1)+".0}")){
+                        subCategory.addItem(subCat.getName());
+                    }
+                }
+            }
+        });
+
         Label lblSubCategory = new Label("SubCategory");
         add(lblSubCategory);
         add(subCategory);
@@ -82,13 +102,13 @@ public class AddNft extends BaseForm {
         submit.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent evt){
-                nft.setImage(image);
                 nft.setTitle(title.getText());
+                nft.setImage(image);
                 nft.setDescription(description.getText());
                 nft.setPrice(Float.parseFloat(price.getText()));
-                //nft.setCurrency(currency.getSelectedItem().toString());
-                //nft.setCategory(category.getSelectedItem().toString());
-                //nft.setSubCategory(subCategory.getSelectedItem().toString());
+                nft.setCurrency((currency.getSelectedIndex()+1)+"");
+                nft.setCategory((category.getSelectedIndex()+1)+"");
+                nft.setSubCategory((subCategory.getSelectedIndex()+1)+"");
                 nft.setLikes(0);
                 //nft.setOwner();
 
@@ -123,12 +143,19 @@ public class AddNft extends BaseForm {
             cr.setFilename("file", uniqueID+"."+extension);//any unique name you want
             System.out.println(uniqueID+"."+extension);
             image = uniqueID+"."+extension;
-            System.out.println(image);
             InfiniteProgress prog = new InfiniteProgress();
             Dialog dlg = prog.showInifiniteBlocking();
             cr.setDisposeOnCompletion(dlg);
             NetworkManager.getInstance().addToQueueAndWait(cr);
             Dialog.show("Success", "Image uploaded", "OK", null);
+            try{
+                enc = EncodedImage.create("/load.png");
+            }catch(IOException ex){
+                Dialog.show("Error",ex.getMessage(),"ok",null);
+            }
+            String url = Statics.URL_REP_IMAGES + image;
+            imgs = URLImage.createToStorage(enc,url,url,URLImage.RESIZE_SCALE);
+            imgv.setImage(imgs);
         });
         getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
     }

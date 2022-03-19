@@ -53,8 +53,9 @@ public class Connection {
         System.out.println(t);
         System.out.println("********");
         String url = Statics.BASE_URL + "/nft/AjoutNftJson?title="+t.getTitle()+"&description="+t.getDescription()
-                +"&price="+t.getPrice()+"&likes="+t.getLikes()+"&image="+t.getImage();
-        req.setPost(false);
+                +"&price="+t.getPrice()+"&likes="+t.getLikes()+"&image="+t.getImage()+"&category="+t.getCategory()
+                +"&subCategory="+t.getSubCategory()+"&currency="+t.getCurrency();
+
         req.setUrl(url);
         req.addArgument("title", t.getTitle());
         req.addArgument("description", t.getDescription() + "");
@@ -373,6 +374,7 @@ public class Connection {
                 float nbrNft = Float.parseFloat(obj.get("nbrNft").toString());
                 subCategory.setNbrNft((int)nbrNft);
 
+                subCategory.setCategory(obj.get("category").toString());
 
                 subCategories.add(subCategory);
             }

@@ -5,13 +5,13 @@ public class SubCategory {
     private String name;
     private String creationDate;
     private int nbrNft;
-    private Category category;
+    private String category;
 
     public SubCategory(){
 
     }
 
-    public SubCategory(int id,String name, String creationDate, int nbrNft, Category category) {
+    public SubCategory(int id,String name, String creationDate, int nbrNft, String category) {
         this.id = id;
         this.name = name;
         this.creationDate = creationDate;
@@ -51,11 +51,11 @@ public class SubCategory {
         this.nbrNft = nbrNft;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 }
