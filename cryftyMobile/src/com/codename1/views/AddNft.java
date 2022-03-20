@@ -8,6 +8,7 @@ import com.codename1.entities.Nft;
 import com.codename1.Services.Connection;
 import com.codename1.capture.Capture;
 import com.codename1.components.SpanLabel;
+import com.codename1.entities.Node;
 import com.codename1.entities.SubCategory;
 import com.codename1.io.MultipartRequest;
 import com.codename1.io.NetworkManager;
@@ -15,13 +16,14 @@ import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.spinner.Picker;
 import com.codename1.uikit.pheonixui.BaseForm;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class AddNft extends BaseForm {
-        String image;
+        String image="";
         EncodedImage enc;
         Image imgs;
         ImageViewer imgv;
@@ -65,7 +67,10 @@ public class AddNft extends BaseForm {
 
         Label lblCurrency = new Label("Currency");
         ComboBox currency = new ComboBox();
-        currency.addItem("Bit");
+        ArrayList<Node> currencies = Connection.getInstance().getAllCurrencies();
+        for(Node curr : currencies){
+            currency.addItem(curr.getCoidCode());
+        }
         add(lblCurrency);
         add(currency);
 
@@ -79,15 +84,48 @@ public class AddNft extends BaseForm {
         add(lblCategory);
         add(category);
 
-        ComboBox subCategory = new ComboBox();
+        Picker subCategory = new Picker();
         ArrayList<SubCategory> subCategories = Connection.getInstance().getAllSubCategories();
+        ArrayList subs = new ArrayList();
+        for(SubCategory subCat : subCategories){
+            if(subCat.getCategory().equals("{id="+(category.getSelectedIndex()+1)+".0}")){
+                subs.add(subCat.getName());
+            }
+        }
+        if(subs.size()!=0){
+            subCategory.setEnabled(true);
+            String tab[] = new String[subs.size()];
+            for(int i=0;i<subs.size();i++){
+                tab[i]= (String) subs.get(i);
+            }
+            subCategory.setStrings(tab);
+        }
+        else{
+            subCategory.setText("No subCategories to show");
+            subCategory.setEnabled(false);
+        }
+
         category.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+                ArrayList subs = new ArrayList();
+                int i=0;
                 for(SubCategory subCat : subCategories){
                     if(subCat.getCategory().equals("{id="+(category.getSelectedIndex()+1)+".0}")){
-                        subCategory.addItem(subCat.getName());
+                        subs.add(subCat.getName());
                     }
+                }
+                if(subs.size()!=0){
+                    subCategory.setEnabled(true);
+                    String tab[] = new String[subs.size()];
+                    for(i=0;i<subs.size();i++){
+                        tab[i]= (String) subs.get(i);
+                    }
+                    subCategory.setStrings(tab);
+                }
+                else{
+                    subCategory.setText("No subCategories to show");
+                    subCategory.setEnabled(false);
                 }
             }
         });
@@ -102,21 +140,35 @@ public class AddNft extends BaseForm {
         submit.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent evt){
-                nft.setTitle(title.getText());
-                nft.setImage(image);
-                nft.setDescription(description.getText());
-                nft.setPrice(Float.parseFloat(price.getText()));
-                nft.setCurrency((currency.getSelectedIndex()+1)+"");
-                nft.setCategory((category.getSelectedIndex()+1)+"");
-                nft.setSubCategory((subCategory.getSelectedIndex()+1)+"");
-                nft.setLikes(0);
-                //nft.setOwner();
-
-                if (Connection.getInstance().addNft(nft)){
-                    Dialog.show("success", "nft ajouté", "ok",null);
+                if(image.isEmpty()){
+                    Dialog.show("Error", "You need to upload an Image", "OK", null);
+                }
+                else if(title.getText().isEmpty()){
+                    Dialog.show("Error", "You need to specify a title", "OK", null);
+                }
+                else if(price.getText().isEmpty()){
+                    Dialog.show("Error", "You need to specify the price", "OK", null);
+                }
+                else if(subCategory.getSelectedStringIndex()<0){
+                    Dialog.show("Error", "You need to specify a subCategory", "OK", null);
                 }
                 else{
-                    Dialog.show("error", "Request erroné", "ok",null);
+                    nft.setTitle(title.getText());
+                    nft.setImage(image);
+                    nft.setDescription(description.getText());
+                    nft.setPrice(Float.parseFloat(price.getText()));
+                    nft.setCurrency((currency.getSelectedIndex()+1)+"");
+                    nft.setCategory((category.getSelectedIndex()+1)+"");
+                    nft.setSubCategory((subCategory.getSelectedStringIndex()+1)+"");
+                    nft.setLikes(0);
+                    //nft.setOwner();
+
+                    if (Connection.getInstance().addNft(nft)){
+                        Dialog.show("success", "nft ajouté", "ok",null);
+                    }
+                    else{
+                        Dialog.show("error", "Request erroné", "ok",null);
+                    }
                 }
             }
         });

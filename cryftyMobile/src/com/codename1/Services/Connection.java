@@ -5,11 +5,8 @@
  */
 package com.codename1.Services;
 
-import com.codename1.entities.Category;
-import com.codename1.entities.Nft;
-import com.codename1.entities.NftComment;
+import com.codename1.entities.*;
 import com.codename1.Statics;
-import com.codename1.entities.SubCategory;
 import com.codename1.io.CharArrayReader;
 import com.codename1.io.ConnectionRequest;
 import com.codename1.io.JSONParser;
@@ -32,7 +29,7 @@ public class Connection {
     public ArrayList<NftComment> comments;
     public ArrayList<Category> categories;
     public ArrayList<SubCategory> subCategories;
-    //public ArrayList<> currencies;
+    public ArrayList<Node> currencies;
 
     public static Connection instance = null;
     public boolean resultOK;
@@ -128,6 +125,24 @@ public class Connection {
         });
         NetworkManager.getInstance().addToQueueAndWait(req);
         return subCategories;
+    }
+
+    public ArrayList<Node> getAllCurrencies() {
+        req = new ConnectionRequest();
+        //String url = Statics.BASE_URL+"/tasks/";
+        String url = Statics.BASE_URL + "/nft/CurrencyJson";
+        System.out.println("===>" + url);
+        req.setUrl(url);
+        req.setPost(false);
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                currencies = parseCurrencies(new String(req.getResponseData()));
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return currencies;
     }
 
     public ArrayList<Nft> getNftByUser(int id){
@@ -382,6 +397,34 @@ public class Connection {
 
         }
         return subCategories;
+    }
+
+    public ArrayList<Node> parseCurrencies(String jsonText) {
+        try {
+            currencies = new ArrayList<>();
+            JSONParser j = new JSONParser();
+            Map<String, Object> tasksListJson
+                    = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
+            List<Map<String, Object>> list = (List<Map<String, Object>>) tasksListJson.get("root");
+
+            for (Map<String, Object> obj : list) {
+                Node currency = new Node();
+                float id = Float.parseFloat(obj.get("id").toString());
+                currency.setId((int) id);
+
+                currency.setNodeLabel(obj.get("nodeLabel").toString());
+
+                currency.setCoidCode(obj.get("coinCode").toString());
+
+                float nbrNft = Float.parseFloat(obj.get("nodeReward").toString());
+                currency.setNodeReward(nbrNft);
+
+                currencies.add(currency);
+            }
+        } catch (IOException ex) {
+
+        }
+        return currencies;
     }
 
 }
