@@ -11,7 +11,10 @@ import com.codename1.entities.NftComment;
 import com.codename1.Services.Connection;
 import com.codename1.components.ImageViewer;
 import com.codename1.ui.*;
+import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.uikit.pheonixui.InboxForm;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,9 +59,31 @@ public class afficheNft extends Form {
             Label lblCategory = new Label(nft.getCategory()+"");
             Label lblSubCategory = new Label(nft.getSubCategory());
             Label lblOwner = new Label(nft.getOwner());
+
+            Button btnUpdateNft = new Button("Update");
+            Button btnDeleteNft = new Button("Delete");
             Label separ = new Label("______________");
-            c.addAll(imgv, lblTitle, lblDescription, lblPrice, lblCurrency, lblDate, lblLikes, lblCategory, lblSubCategory, lblOwner,separ);
+            c.addAll(imgv, lblTitle, lblDescription, lblPrice, lblCurrency, lblDate, lblLikes, lblCategory, lblSubCategory, lblOwner,
+                    btnUpdateNft,btnDeleteNft,separ);
             add(c);
+
+            btnUpdateNft.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    new AddNft(previous,nft.getTitle(),nft.getDescription(),nft.getPrice()
+                    ,nft.getCurrency(),nft.getCategory(),nft.getSubCategory()).show();
+                }
+            });
+
+            btnDeleteNft.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    Connection.getInstance().deleteNft(nft);
+                    Dialog.show("Success","Nft Supprimé","ok",null);
+                    Form indexForm = new InboxForm();
+                    new Explore(indexForm).show();
+                }
+            });
         }
         ArrayList<NftComment> comments = Connection.getInstance().getComments(id);
         for (NftComment comment : comments) {

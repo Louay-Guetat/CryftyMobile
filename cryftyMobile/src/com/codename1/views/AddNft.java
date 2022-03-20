@@ -212,5 +212,143 @@ public class AddNft extends BaseForm {
         getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
     }
 
+
+
+    public AddNft(Form previous,String titre, String desc
+                    ,float prix, String coinCode, String categorie, String sousCategorie) {
+        setLayout(BoxLayout.y());
+        setTitle("Update "+titre);
+        SpanLabel sp = new SpanLabel();
+        add(sp);
+
+        Nft nft = new Nft();
+
+        TextField title = new TextField(titre);
+        Label lblTitle = new Label("Titre");
+        add(lblTitle);
+        add(title);
+
+        TextArea description = new TextArea(desc);
+        description.setHeight(200);
+        Label lblDescription = new Label("Description");
+        add(lblDescription);
+        add(description);
+
+        TextField price = new TextField(prix+"");
+        Label lblPrice = new Label("Price: ");
+        add(lblPrice);
+        add(price);
+
+        Label lblCurrency = new Label("Currency");
+        ComboBox currency = new ComboBox();
+        ArrayList<Node> currencies = Connection.getInstance().getAllCurrencies();
+        for(Node curr : currencies){
+            currency.addItem(curr.getCoidCode());
+        }
+        currency.setSelectedItem(coinCode);
+        add(lblCurrency);
+        add(currency);
+
+        ComboBox category = new ComboBox();
+        ArrayList<Category> categories = Connection.getInstance().getAllCategories();
+        for(Category cat : categories){
+            category.addItem(cat.getName());
+        }
+        category.setSelectedItem(categorie);
+        Label lblCategory = new Label("Category");
+        add(lblCategory);
+        add(category);
+
+        Picker subCategory = new Picker();
+        ArrayList<SubCategory> subCategories = Connection.getInstance().getAllSubCategories();
+        ArrayList subs = new ArrayList();
+        for(SubCategory subCat : subCategories){
+            if(subCat.getCategory().equals("{id="+(category.getSelectedIndex()+1)+".0}")){
+                subs.add(subCat.getName());
+            }
+        }
+        if(subs.size()!=0){
+            subCategory.setEnabled(true);
+            String tab[] = new String[subs.size()];
+            for(int i=0;i<subs.size();i++){
+                tab[i]= (String) subs.get(i);
+            }
+            subCategory.setStrings(tab);
+        }
+        else{
+            subCategory.setText("No subCategories to show");
+            subCategory.setEnabled(false);
+        }
+
+        category.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                ArrayList subs = new ArrayList();
+                int i=0;
+                for(SubCategory subCat : subCategories){
+                    if(subCat.getCategory().equals("{id="+(category.getSelectedIndex()+1)+".0}")){
+                        subs.add(subCat.getName());
+                    }
+                }
+                if(subs.size()!=0){
+                    subCategory.setEnabled(true);
+                    String tab[] = new String[subs.size()];
+                    for(i=0;i<subs.size();i++){
+                        tab[i]= (String) subs.get(i);
+                    }
+                    subCategory.setStrings(tab);
+                }
+                else{
+                    subCategory.setText("No subCategories to show");
+                    subCategory.setEnabled(false);
+                }
+            }
+        });
+        subCategory.setSelectedString(sousCategorie);
+        Label lblSubCategory = new Label("SubCategory");
+        add(lblSubCategory);
+        add(subCategory);
+
+        Button Update = new Button("Update");
+        add(Update);
+
+        Update.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent evt){
+                if(image.isEmpty()){
+                    Dialog.show("Error", "You need to upload an Image", "OK", null);
+                }
+                else if(title.getText().isEmpty()){
+                    Dialog.show("Error", "You need to specify a title", "OK", null);
+                }
+                else if(price.getText().isEmpty()){
+                    Dialog.show("Error", "You need to specify the price", "OK", null);
+                }
+                else if(subCategory.getSelectedStringIndex()<0){
+                    Dialog.show("Error", "You need to specify a subCategory", "OK", null);
+                }
+                else{
+                    nft.setTitle(title.getText());
+                    nft.setImage(image);
+                    nft.setDescription(description.getText());
+                    nft.setPrice(Float.parseFloat(price.getText()));
+                    nft.setCurrency((currency.getSelectedIndex()+1)+"");
+                    nft.setCategory((category.getSelectedIndex()+1)+"");
+                    nft.setSubCategory((subCategory.getSelectedStringIndex()+1)+"");
+                    nft.setLikes(0);
+                    //nft.setOwner();
+
+                    if (Connection.getInstance().updateNft(nft)){
+                        Dialog.show("success", "nft modifié", "ok",null);
+                    }
+                    else{
+                        Dialog.show("error", "Request erroné", "ok",null);
+                    }
+                }
+            }
+        });
+        getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
+    }
+
 }
 

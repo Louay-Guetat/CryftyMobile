@@ -46,20 +46,20 @@ public class Connection {
         return instance;
     }
 
-    public boolean addNft(Nft t) {
-        System.out.println(t);
+    public boolean addNft(Nft nft) {
+        System.out.println(nft);
         System.out.println("********");
-        String url = Statics.BASE_URL + "/nft/AjoutNftJson?title="+t.getTitle()+"&description="+t.getDescription()
-                +"&price="+t.getPrice()+"&likes="+t.getLikes()+"&image="+t.getImage()+"&category="+t.getCategory()
-                +"&subCategory="+t.getSubCategory()+"&currency="+t.getCurrency();
+        String url = Statics.BASE_URL + "/nft/AjoutNftJson?title="+nft.getTitle()+"&description="+nft.getDescription()
+                +"&price="+nft.getPrice()+"&likes="+nft.getLikes()+"&image="+nft.getImage()+"&category="+nft.getCategory()
+                +"&subCategory="+nft.getSubCategory()+"&currency="+nft.getCurrency();
 
         req.setUrl(url);
-        req.addArgument("title", t.getTitle());
-        req.addArgument("description", t.getDescription() + "");
-        req.addArgument("price", t.getPrice()+"");
-        req.addArgument("creationDate", t.getCreationDate()+ "");
-        req.addArgument("image", t.getImage());
-        req.addArgument("likes", t.getLikes() + "");
+        req.addArgument("title", nft.getTitle());
+        req.addArgument("description", nft.getDescription() + "");
+        req.addArgument("price", nft.getPrice()+"");
+        req.addArgument("creationDate", nft.getCreationDate()+ "");
+        req.addArgument("image", nft.getImage());
+        req.addArgument("likes", nft.getLikes() + "");
         System.out.println(req.getUrl());
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
@@ -70,6 +70,26 @@ public class Connection {
         });
         NetworkManager.getInstance().addToQueueAndWait(req);
         return resultOK;
+    }
+
+    public boolean updateNft(Nft nft){
+
+        return resultOK;
+    }
+
+    public void deleteNft(Nft nft){
+        System.out.println(nft);
+        System.out.println("********");
+        String url = Statics.BASE_URL + "/nft/deleteNftJson/"+nft.getId();
+        req.setUrl(url);
+        System.out.println("===>" + url);
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
     }
 
 
