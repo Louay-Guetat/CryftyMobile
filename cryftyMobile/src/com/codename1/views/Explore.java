@@ -10,7 +10,9 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.uikit.pheonixui.BaseForm;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Explore extends BaseForm {
     EncodedImage enc;
@@ -35,12 +37,24 @@ public class Explore extends BaseForm {
             btnTitle.addActionListener((e)-> new afficheNft(current,nft.getId()).show());
 
             Label lblDescription = new Label(nft.getDescription());
+
             Label lblPrice = new Label(nft.getPrice()+"");
+
             Label lblCurrency = new Label(nft.getCurrency());
-            Label lblDate = new Label(nft.getCreationDate());
+            Date creationDate = new Date();
+            try{
+                creationDate=new SimpleDateFormat("dd/MM/yyyy").parse(nft.getCreationDate());
+            }catch(Exception ex){
+                System.out.println(ex.getMessage());
+            }
+            Label lblDate = new Label(creationDate.toString());
+
             Label lblLikes = new Label(nft.getLikes()+"");
+
             Label lblCategory = new Label(nft.getCategory()+"");
+
             Label lblSubCategory = new Label(nft.getSubCategory());
+
             Label lblOwner = new Label(nft.getOwner());
             Label separ = new Label("__________________");
 
@@ -58,5 +72,6 @@ public class Explore extends BaseForm {
         }
         getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
     }
+
 }
 

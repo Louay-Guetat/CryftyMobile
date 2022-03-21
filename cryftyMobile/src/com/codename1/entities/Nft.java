@@ -16,7 +16,7 @@ public class Nft {
     public Nft() {
     }
 
-    public Nft(String title, String description, float price, String creationDate, String image, int likes, String category,String subCategory,String owner, String Node) {
+    public Nft(String title, String description, float price, String creationDate, String image, int likes, String category,String subCategory,String owner, String currency) {
         this.title = title;
         this.description = description;
         this.price = price;

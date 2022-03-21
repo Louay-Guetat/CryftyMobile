@@ -27,6 +27,8 @@ public class AddNft extends BaseForm {
         EncodedImage enc;
         Image imgs;
         ImageViewer imgv;
+
+        //addForm
     public AddNft(Form previous) {
         setLayout(BoxLayout.y());
         setTitle("Add Nft");
@@ -46,8 +48,6 @@ public class AddNft extends BaseForm {
         imageContainer.add(lblImage);
         add(imgv);
         add(btnUpload);
-
-        Nft nft = new Nft();
 
         TextField title = new TextField();
         Label lblTitle = new Label("Titre");
@@ -99,6 +99,7 @@ public class AddNft extends BaseForm {
                 tab[i]= (String) subs.get(i);
             }
             subCategory.setStrings(tab);
+            subCategory.setSelectedString(tab[0]);
         }
         else{
             subCategory.setText("No subCategories to show");
@@ -122,6 +123,7 @@ public class AddNft extends BaseForm {
                         tab[i]= (String) subs.get(i);
                     }
                     subCategory.setStrings(tab);
+                    subCategory.setSelectedString(tab[0]);
                 }
                 else{
                     subCategory.setText("No subCategories to show");
@@ -153,6 +155,8 @@ public class AddNft extends BaseForm {
                     Dialog.show("Error", "You need to specify a subCategory", "OK", null);
                 }
                 else{
+                    Nft nft = new Nft();
+
                     nft.setTitle(title.getText());
                     nft.setImage(image);
                     nft.setDescription(description.getText());
@@ -161,7 +165,7 @@ public class AddNft extends BaseForm {
                     nft.setCategory((category.getSelectedIndex()+1)+"");
                     nft.setSubCategory((subCategory.getSelectedStringIndex()+1)+"");
                     nft.setLikes(0);
-                    //nft.setOwner();
+                    nft.setOwner(client.getId()+"");
 
                     if (Connection.getInstance().addNft(nft)){
                         Dialog.show("success", "nft ajouté", "ok",null);
@@ -214,7 +218,8 @@ public class AddNft extends BaseForm {
 
 
 
-    public AddNft(Form previous,String titre, String desc
+        // updateForm
+    public AddNft(Form previous,int id ,String titre, String desc
                     ,float prix, String coinCode, String categorie, String sousCategorie) {
         setLayout(BoxLayout.y());
         setTitle("Update "+titre);
@@ -254,7 +259,8 @@ public class AddNft extends BaseForm {
         for(Category cat : categories){
             category.addItem(cat.getName());
         }
-        category.setSelectedItem(categorie);
+        category.setSelectedItem(categorie.substring(14,categorie.length()-1));
+        System.out.println(categorie.substring(14,categorie.length()-1));
         Label lblCategory = new Label("Category");
         add(lblCategory);
         add(category);
@@ -297,6 +303,7 @@ public class AddNft extends BaseForm {
                         tab[i]= (String) subs.get(i);
                     }
                     subCategory.setStrings(tab);
+                    subCategory.setSelectedString(tab[0]);
                 }
                 else{
                     subCategory.setText("No subCategories to show");
@@ -304,7 +311,7 @@ public class AddNft extends BaseForm {
                 }
             }
         });
-        subCategory.setSelectedString(sousCategorie);
+        subCategory.setSelectedString(sousCategorie.substring(6,sousCategorie.length()-1));
         Label lblSubCategory = new Label("SubCategory");
         add(lblSubCategory);
         add(subCategory);
@@ -315,10 +322,8 @@ public class AddNft extends BaseForm {
         Update.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent evt){
-                if(image.isEmpty()){
-                    Dialog.show("Error", "You need to upload an Image", "OK", null);
-                }
-                else if(title.getText().isEmpty()){
+
+                if(title.getText().isEmpty()){
                     Dialog.show("Error", "You need to specify a title", "OK", null);
                 }
                 else if(price.getText().isEmpty()){
@@ -328,6 +333,7 @@ public class AddNft extends BaseForm {
                     Dialog.show("Error", "You need to specify a subCategory", "OK", null);
                 }
                 else{
+                    nft.setId(id);
                     nft.setTitle(title.getText());
                     nft.setImage(image);
                     nft.setDescription(description.getText());
@@ -336,10 +342,9 @@ public class AddNft extends BaseForm {
                     nft.setCategory((category.getSelectedIndex()+1)+"");
                     nft.setSubCategory((subCategory.getSelectedStringIndex()+1)+"");
                     nft.setLikes(0);
-                    //nft.setOwner();
 
                     if (Connection.getInstance().updateNft(nft)){
-                        Dialog.show("success", "nft modifié", "ok",null);
+                        Dialog.show("Success", "NFT Modifié", "ok",null);
                     }
                     else{
                         Dialog.show("error", "Request erroné", "ok",null);

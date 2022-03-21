@@ -51,15 +51,9 @@ public class Connection {
         System.out.println("********");
         String url = Statics.BASE_URL + "/nft/AjoutNftJson?title="+nft.getTitle()+"&description="+nft.getDescription()
                 +"&price="+nft.getPrice()+"&likes="+nft.getLikes()+"&image="+nft.getImage()+"&category="+nft.getCategory()
-                +"&subCategory="+nft.getSubCategory()+"&currency="+nft.getCurrency();
+                +"&subCategory="+nft.getSubCategory()+"&currency="+nft.getCurrency()+"&owner="+nft.getOwner();
 
         req.setUrl(url);
-        req.addArgument("title", nft.getTitle());
-        req.addArgument("description", nft.getDescription() + "");
-        req.addArgument("price", nft.getPrice()+"");
-        req.addArgument("creationDate", nft.getCreationDate()+ "");
-        req.addArgument("image", nft.getImage());
-        req.addArgument("likes", nft.getLikes() + "");
         System.out.println(req.getUrl());
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
@@ -73,7 +67,22 @@ public class Connection {
     }
 
     public boolean updateNft(Nft nft){
+        System.out.println(nft);
+        System.out.println("********");
+        String url = Statics.BASE_URL + "/nft/ModifierNftJson/"+nft.getId()+"?title="+nft.getTitle()+"&description="+nft.getDescription()
+                +"&price="+nft.getPrice()+"&likes="+nft.getLikes()+"&image="+nft.getImage()+"&category="+nft.getCategory()
+                +"&subCategory="+nft.getSubCategory()+"&currency="+nft.getCurrency();
 
+        req.setUrl(url);
+        System.out.println(req.getUrl());
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                resultOK = req.getResponseCode() == 200; //Code HTTP 200 OK
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
         return resultOK;
     }
 
@@ -92,10 +101,27 @@ public class Connection {
         NetworkManager.getInstance().addToQueueAndWait(req);
     }
 
+    public boolean addComment(NftComment comment) {
+        System.out.println(comment.getComment());
+        System.out.println("********");
+        String url = Statics.BASE_URL + "/nft/AjoutNftCommentJson?comment="+comment.getComment()+"&nft="+comment.getNft()+
+                "&owner="+comment.getUser();
+        req.setUrl(url);
+        System.out.println(req.getUrl());
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                resultOK = req.getResponseCode() == 200; //Code HTTP 200 OK
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return resultOK;
+    }
+
 
     public ArrayList<Nft> getAllNfts() {
         req = new ConnectionRequest();
-        //String url = Statics.BASE_URL+"/tasks/";
         String url = Statics.BASE_URL + "/nft/AfficheNftJson";
         System.out.println("===>" + url);
         req.setUrl(url);
@@ -113,7 +139,7 @@ public class Connection {
 
     public ArrayList<Category> getAllCategories() {
         req = new ConnectionRequest();
-        //String url = Statics.BASE_URL+"/tasks/";
+
         String url = Statics.BASE_URL + "/category/AfficheCatJson";
         System.out.println("===>" + url);
         req.setUrl(url);
@@ -131,7 +157,6 @@ public class Connection {
 
     public ArrayList<SubCategory> getAllSubCategories() {
         req = new ConnectionRequest();
-        //String url = Statics.BASE_URL+"/tasks/";
         String url = Statics.BASE_URL + "/category/AfficheSubCatJson";
         System.out.println("===>" + url);
         req.setUrl(url);
@@ -149,7 +174,6 @@ public class Connection {
 
     public ArrayList<Node> getAllCurrencies() {
         req = new ConnectionRequest();
-        //String url = Statics.BASE_URL+"/tasks/";
         String url = Statics.BASE_URL + "/nft/CurrencyJson";
         System.out.println("===>" + url);
         req.setUrl(url);
@@ -167,7 +191,6 @@ public class Connection {
 
     public ArrayList<Nft> getNftByUser(int id){
         req = new ConnectionRequest();
-        //String url = Statics.BASE_URL+"/tasks/";
         String url = Statics.BASE_URL + "/nft/AfficheProfileJson/"+id;
         System.out.println("===>" + url);
         req.setUrl(url);
@@ -185,7 +208,6 @@ public class Connection {
 
     public ArrayList<Nft> afficheOneNft(int id){
         req = new ConnectionRequest();
-        //String url = Statics.BASE_URL+"/tasks/";
         String url = Statics.BASE_URL + "/nft/AfficheItemJson/"+id;
         System.out.println("===>" + url);
         req.setUrl(url);
@@ -203,7 +225,6 @@ public class Connection {
 
     public ArrayList<NftComment> getComments(int id) {
         req = new ConnectionRequest();
-        //String url = Statics.BASE_URL+"/tasks/";
         String url = Statics.BASE_URL + "/nft/AfficheCommentsJson/"+id;
         System.out.println("===>" + url);
         req.setUrl(url);
@@ -240,7 +261,6 @@ public class Connection {
 
                 nft.setDescription(obj.get("description").toString());
 
-                //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
                 nft.setCreationDate(obj.get("creationDate").toString());
 
                 nft.setImage(obj.get("image").toString());
@@ -313,7 +333,6 @@ public class Connection {
             JSONParser j = new JSONParser();
             Map<String, Object> tasksListJson
                     = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
-            //List<Map<String, Object>> list = (List<Map<String, Object>>) tasksListJson.get("root");
 
             Nft nft = new Nft();
 
@@ -326,7 +345,6 @@ public class Connection {
 
             nft.setDescription(tasksListJson.get("description").toString());
 
-            //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
             nft.setCreationDate(tasksListJson.get("creationDate").toString());
 
             nft.setImage(tasksListJson.get("image").toString());

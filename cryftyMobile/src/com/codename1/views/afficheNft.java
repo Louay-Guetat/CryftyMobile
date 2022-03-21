@@ -14,6 +14,7 @@ import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.uikit.pheonixui.BaseForm;
 import com.codename1.uikit.pheonixui.InboxForm;
 
 import java.io.IOException;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
  *
  * @author LOUAY
  */
-public class afficheNft extends Form {
+public class afficheNft extends BaseForm {
     EncodedImage enc;
     Image imgs;
     ImageViewer imgv;
@@ -32,8 +33,8 @@ public class afficheNft extends Form {
         ArrayList<Nft> nfts = Connection.getInstance().afficheOneNft(id);
         setTitle("List tasks");
         for (Nft nft : nfts) {
-            Container c = new Container();
-            c.setLayout(BoxLayout.y());
+            Container nftContainer = new Container();
+            nftContainer.setLayout(BoxLayout.y());
 
             try{
                 imgv = new ImageViewer(Image.createImage("/load.png"));
@@ -63,14 +64,20 @@ public class afficheNft extends Form {
             Button btnUpdateNft = new Button("Update");
             Button btnDeleteNft = new Button("Delete");
             Label separ = new Label("______________");
-            c.addAll(imgv, lblTitle, lblDescription, lblPrice, lblCurrency, lblDate, lblLikes, lblCategory, lblSubCategory, lblOwner,
-                    btnUpdateNft,btnDeleteNft,separ);
-            add(c);
+            nftContainer.addAll(imgv, lblTitle, lblDescription, lblPrice, lblCurrency, lblDate, lblLikes, lblCategory, lblSubCategory,
+                    lblOwner);
+            if(nft.getOwner().substring(4,5).equals(client.getId()+"")){
+                nftContainer.add(btnUpdateNft);
+                nftContainer.add(btnDeleteNft);
+                nftContainer.add(separ);
+            }
+            else nftContainer.add(separ);
+            add(nftContainer);
 
             btnUpdateNft.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
-                    new AddNft(previous,nft.getTitle(),nft.getDescription(),nft.getPrice()
+                    new AddNft(previous,nft.getId(),nft.getTitle(),nft.getDescription(),nft.getPrice()
                     ,nft.getCurrency(),nft.getCategory(),nft.getSubCategory()).show();
                 }
             });
@@ -94,10 +101,36 @@ public class afficheNft extends Form {
             Label lblPostDate = new Label(comment.getPostDate());
             Label lblLikes = new Label(comment.getLikes()+"");
             Label lblDislikes = new Label(comment.getDislikes()+ "");
+
+            if(comment.getUser().substring(4,5).equals(client.getId()+"")){
+                Button deleteComment = new Button("delete");
+                Button UpdateComment = new Button("Update");
+                c.addAll(deleteComment,UpdateComment);
+            }
+
             Label separ = new Label("______________");
             c.addAll(lblUser,lblComment, lblPostDate,lblLikes,lblDislikes,separ);
             add(c);
         }
+        Container commentSection = new Container();
+        TextField tfComment = new TextField();
+        Button btnComment = new Button(">");
+        btnComment.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if(!tfComment.getText().isEmpty()){
+                    NftComment nftComment = new NftComment();
+                    nftComment.setComment(tfComment.getText());
+                    nftComment.setNft(id+"");
+                    nftComment.setUser(client.getId()+"");
+                    Connection.getInstance().addComment(nftComment);
+                    Dialog.show("success", "commentaire ajouté", "ok",null);
+                }
+                new afficheNft(new Explore(new InboxForm()),id).show();
+            }
+        });
+        commentSection.addAll(tfComment,btnComment);
+        add(commentSection);
         getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
     }
 }
