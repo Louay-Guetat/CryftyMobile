@@ -3,17 +3,17 @@ package com.codename1.entities;
 public class Node {
     int id;
     String nodeLabel;
-    String coidCode;
+    String coinCode;
     float nodeReward;
 
     public Node(){
 
     }
 
-    public Node(int id, String nodeLabel, String coidCode, float nodeReward) {
+    public Node(int id, String nodeLabel, String coinCode, float nodeReward) {
         this.id = id;
         this.nodeLabel = nodeLabel;
-        this.coidCode = coidCode;
+        this.coinCode = coinCode;
         this.nodeReward = nodeReward;
     }
 
@@ -34,11 +34,11 @@ public class Node {
     }
 
     public String getCoidCode() {
-        return coidCode;
+        return coinCode;
     }
 
     public void setCoidCode(String coidCode) {
-        this.coidCode = coidCode;
+        this.coinCode = coidCode;
     }
 
     public float getNodeReward() {
@@ -54,9 +54,13 @@ public class Node {
         return "Node{" +
                 "id=" + id +
                 ", nodeLabel='" + nodeLabel + '\'' +
-                ", coidCode='" + coidCode + '\'' +
+                ", coidCode='" + coinCode + '\'' +
                 ", nodeReward=" + nodeReward +
                 '}';
+    }
+
+    public String get(){
+        return "{coinCode="+coinCode+"}";
     }
 
 }

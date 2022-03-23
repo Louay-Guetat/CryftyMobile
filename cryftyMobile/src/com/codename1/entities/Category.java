@@ -58,4 +58,19 @@ public class Category {
     public void setNbrSubCategory(int nbrSubCategory) {
         this.nbrSubCategory = nbrSubCategory;
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", creationDate='" + creationDate + '\'' +
+                ", nbrNft=" + nbrNft +
+                ", nbrSubCategory=" + nbrSubCategory +
+                '}';
+    }
+
+    public String get(){
+        return "{id="+(float)id+"}";
+    }
 }

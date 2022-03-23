@@ -1,13 +1,11 @@
 package com.codename1.views;
 
 import com.codename1.Statics;
-import com.codename1.components.ImageViewer;
-import com.codename1.components.InfiniteProgress;
+import com.codename1.components.*;
 import com.codename1.entities.Category;
 import com.codename1.entities.Nft;
 import com.codename1.Services.Connection;
 import com.codename1.capture.Capture;
-import com.codename1.components.SpanLabel;
 import com.codename1.entities.Node;
 import com.codename1.entities.SubCategory;
 import com.codename1.io.MultipartRequest;
@@ -32,62 +30,85 @@ public class AddNft extends BaseForm {
     public AddNft(Form previous) {
         setLayout(BoxLayout.y());
         setTitle("Add Nft");
+
         SpanLabel sp = new SpanLabel();
-        add(sp);
-        Container imageContainer = new Container();
-        imageContainer.setLayout(BoxLayout.xCenter());
         Button btnUpload = new Button("Upload");
+        Label lblImage = new Label();
+        Label lblTitle = new Label("Titre");
+        Label lblPrice = new Label("Price: ");
+        Label lblCurrency = new Label("Currency");
+        Label lblDescription = new Label("Description");
+        Label lblCategory = new Label("Category");
+        Label lblSubCategory = new Label("SubCategory");
+        TextField title = new TextField("","Title",0,TextArea.ANY);
+        TextArea description = new TextArea();
+        TextField price = new TextField("","Price",0,TextArea.ANY);
+        ComboBox currency = new ComboBox();
+        ComboBox category = new ComboBox();
+        Picker subCategory = new Picker();
+        Button submit = new Button("Submit");
+
+        Container imageContainer = new Container(BoxLayout.y());
+        Container titleContainer = new Container(BoxLayout.y());
+        Container descriptionContainer = new Container(BoxLayout.y());
+        Container priceContainer = new Container(BoxLayout.y());
+        Container currencyContainer = new Container(BoxLayout.y());
+        Container categoryContainer = new Container(BoxLayout.y());
+        Container subCategoryContainer = new Container(BoxLayout.y());
+        Container buttonContainer = new Container(BoxLayout.y());
+
         try{
             imgv = new ImageViewer(Image.createImage("/load.png"));
         }catch(IOException ex){
             Dialog.show("Error",ex.getMessage(),"ok",null);
         }
 
-        Label lblImage = new Label();
-        //lblImage.setIcon(icon);
-        imageContainer.add(lblImage);
-        add(imgv);
-        add(btnUpload);
+        addComponent(imageContainer);
+        imageContainer.addComponent(imgv);
+        imageContainer.addComponent(btnUpload);
 
-        TextField title = new TextField();
-        Label lblTitle = new Label("Titre");
-        add(lblTitle);
-        add(title);
 
-        TextArea description = new TextArea();
-        description.setHeight(200);
-        Label lblDescription = new Label("Description");
-        add(lblDescription);
-        add(description);
+        addComponent(titleContainer);
+        titleContainer.addComponent(lblTitle);
+        titleContainer.addComponent(title);
 
-        TextField price = new TextField();
-        Label lblPrice = new Label("Price: ");
-        add(lblPrice);
-        add(price);
 
-        Label lblCurrency = new Label("Currency");
-        ComboBox currency = new ComboBox();
-        ArrayList<Node> currencies = Connection.getInstance().getAllCurrencies();
-        for(Node curr : currencies){
+        addComponent(descriptionContainer);
+        descriptionContainer.addComponent(lblDescription);
+        descriptionContainer.addComponent(description);
+        description.setRows(3);
+
+        addComponent(priceContainer);
+        priceContainer.addComponent(lblPrice);
+        priceContainer.addComponent(price);
+
+
+        addComponent(currencyContainer);
+        currencyContainer.addComponent(lblCurrency);
+        currencyContainer.addComponent(currency);
+
+        addComponent(categoryContainer);
+        categoryContainer.addComponent(lblCategory);
+        categoryContainer.addComponent(category);
+
+        addComponent(subCategoryContainer);
+        subCategoryContainer.addComponent(lblSubCategory);
+        subCategoryContainer.addComponent(subCategory);
+
+        addComponent(buttonContainer);
+        buttonContainer.addComponent(submit);
+
+
+        for(Node curr : allCurrencies){
             currency.addItem(curr.getCoidCode());
         }
-        add(lblCurrency);
-        add(currency);
 
-        ComboBox category = new ComboBox();
-        ArrayList<Category> categories = Connection.getInstance().getAllCategories();
-        for(Category cat : categories){
+        for(Category cat : allCategories){
             category.addItem(cat.getName());
         }
 
-        Label lblCategory = new Label("Category");
-        add(lblCategory);
-        add(category);
-
-        Picker subCategory = new Picker();
-        ArrayList<SubCategory> subCategories = Connection.getInstance().getAllSubCategories();
         ArrayList subs = new ArrayList();
-        for(SubCategory subCat : subCategories){
+        for(SubCategory subCat : allSubCategories){
             if(subCat.getCategory().equals("{id="+(category.getSelectedIndex()+1)+".0}")){
                 subs.add(subCat.getName());
             }
@@ -106,13 +127,14 @@ public class AddNft extends BaseForm {
             subCategory.setEnabled(false);
         }
 
+        //ActionListeners
         category.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 ArrayList subs = new ArrayList();
                 int i=0;
-                for(SubCategory subCat : subCategories){
-                    if(subCat.getCategory().equals("{id="+(category.getSelectedIndex()+1)+".0}")){
+                for(SubCategory subCat : allSubCategories){
+                    if(subCat.getCategory().getName().equals(category.getSelectedItem())){
                         subs.add(subCat.getName());
                     }
                 }
@@ -131,13 +153,6 @@ public class AddNft extends BaseForm {
                 }
             }
         });
-
-        Label lblSubCategory = new Label("SubCategory");
-        add(lblSubCategory);
-        add(subCategory);
-
-        Button submit = new Button("Submit");
-        add(submit);
 
         submit.addActionListener(new ActionListener(){
             @Override
@@ -161,9 +176,9 @@ public class AddNft extends BaseForm {
                     nft.setImage(image);
                     nft.setDescription(description.getText());
                     nft.setPrice(Float.parseFloat(price.getText()));
-                    nft.setCurrency((currency.getSelectedIndex()+1)+"");
-                    nft.setCategory((category.getSelectedIndex()+1)+"");
-                    nft.setSubCategory((subCategory.getSelectedStringIndex()+1)+"");
+                    //nft.setCurrency((currency.getSelectedIndex()+1)+"");
+                    //nft.setCategory((category.getSelectedItem()));
+                    //nft.setSubCategory(subCategory.getSelectedString());
                     nft.setLikes(0);
                     nft.setOwner(client.getId()+"");
 
@@ -221,57 +236,84 @@ public class AddNft extends BaseForm {
         // updateForm
     public AddNft(Form previous,int id ,String titre, String desc
                     ,float prix, String coinCode, String categorie, String sousCategorie) {
+
         setLayout(BoxLayout.y());
-        setTitle("Update "+titre);
-        SpanLabel sp = new SpanLabel();
-        add(sp);
+        setTitle("Add Nft");
+
+
+        Label lblTitle = new Label("Titre");
+        Label lblPrice = new Label("Price: ");
+        Label lblCurrency = new Label("Currency");
+        Label lblDescription = new Label("Description");
+        Label lblCategory = new Label("Category");
+        Label lblSubCategory = new Label("SubCategory");
+        TextField title = new TextField(titre,"Title",0,TextArea.ANY);
+        TextArea description = new TextArea(desc);
+        TextField price = new TextField(prix+"","Price",0,TextArea.ANY);
+        ComboBox currency = new ComboBox();
+        ComboBox category = new ComboBox();
+        Picker subCategory = new Picker();
+        Button Update = new Button("Update");
+
+        Container titleContainer = new Container(BoxLayout.y());
+        Container descriptionContainer = new Container(BoxLayout.y());
+        Container priceContainer = new Container(BoxLayout.y());
+        Container currencyContainer = new Container(BoxLayout.y());
+        Container categoryContainer = new Container(BoxLayout.y());
+        Container subCategoryContainer = new Container(BoxLayout.y());
+        Container buttonContainer = new Container(BoxLayout.y());
+
+        addComponent(titleContainer);
+        titleContainer.addComponent(lblTitle);
+        titleContainer.addComponent(title);
+
+
+        addComponent(descriptionContainer);
+        descriptionContainer.addComponent(lblDescription);
+        descriptionContainer.addComponent(description);
+        description.setRows(3);
+
+        addComponent(priceContainer);
+        priceContainer.addComponent(lblPrice);
+        priceContainer.addComponent(price);
+
+
+        addComponent(currencyContainer);
+        currencyContainer.addComponent(lblCurrency);
+        currencyContainer.addComponent(currency);
+
+        addComponent(categoryContainer);
+        categoryContainer.addComponent(lblCategory);
+        categoryContainer.addComponent(category);
+
+        addComponent(subCategoryContainer);
+        subCategoryContainer.addComponent(lblSubCategory);
+        subCategoryContainer.addComponent(subCategory);
+
+        addComponent(buttonContainer);
+        buttonContainer.addComponent(Update);
 
         Nft nft = new Nft();
 
-        TextField title = new TextField(titre);
-        Label lblTitle = new Label("Titre");
-        add(lblTitle);
-        add(title);
 
-        TextArea description = new TextArea(desc);
-        description.setHeight(200);
-        Label lblDescription = new Label("Description");
-        add(lblDescription);
-        add(description);
-
-        TextField price = new TextField(prix+"");
-        Label lblPrice = new Label("Price: ");
-        add(lblPrice);
-        add(price);
-
-        Label lblCurrency = new Label("Currency");
-        ComboBox currency = new ComboBox();
-        ArrayList<Node> currencies = Connection.getInstance().getAllCurrencies();
-        for(Node curr : currencies){
+        for(Node curr : allCurrencies){
             currency.addItem(curr.getCoidCode());
         }
         currency.setSelectedItem(coinCode);
-        add(lblCurrency);
-        add(currency);
 
-        ComboBox category = new ComboBox();
-        ArrayList<Category> categories = Connection.getInstance().getAllCategories();
-        for(Category cat : categories){
+
+        for(Category cat : allCategories){
             category.addItem(cat.getName());
         }
-        category.setSelectedItem(categorie.substring(14,categorie.length()-1));
-        System.out.println(categorie.substring(14,categorie.length()-1));
-        Label lblCategory = new Label("Category");
-        add(lblCategory);
-        add(category);
+        System.out.println(categorie);
+        category.setSelectedItem(categorie);
 
-        Picker subCategory = new Picker();
-        ArrayList<SubCategory> subCategories = Connection.getInstance().getAllSubCategories();
+
+
         ArrayList subs = new ArrayList();
-        for(SubCategory subCat : subCategories){
-            if(subCat.getCategory().equals("{id="+(category.getSelectedIndex()+1)+".0}")){
+        for(SubCategory subCat : allSubCategories){
+            if(subCat.getCategory().getName().equals(categorie))
                 subs.add(subCat.getName());
-            }
         }
         if(subs.size()!=0){
             subCategory.setEnabled(true);
@@ -285,13 +327,16 @@ public class AddNft extends BaseForm {
             subCategory.setText("No subCategories to show");
             subCategory.setEnabled(false);
         }
+        subCategory.setSelectedString(sousCategorie);
 
+
+        //ActionListeners
         category.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 ArrayList subs = new ArrayList();
                 int i=0;
-                for(SubCategory subCat : subCategories){
+                for(SubCategory subCat : allSubCategories){
                     if(subCat.getCategory().equals("{id="+(category.getSelectedIndex()+1)+".0}")){
                         subs.add(subCat.getName());
                     }
@@ -311,13 +356,6 @@ public class AddNft extends BaseForm {
                 }
             }
         });
-        subCategory.setSelectedString(sousCategorie.substring(6,sousCategorie.length()-1));
-        Label lblSubCategory = new Label("SubCategory");
-        add(lblSubCategory);
-        add(subCategory);
-
-        Button Update = new Button("Update");
-        add(Update);
 
         Update.addActionListener(new ActionListener(){
             @Override
@@ -338,9 +376,9 @@ public class AddNft extends BaseForm {
                     nft.setImage(image);
                     nft.setDescription(description.getText());
                     nft.setPrice(Float.parseFloat(price.getText()));
-                    nft.setCurrency((currency.getSelectedIndex()+1)+"");
-                    nft.setCategory((category.getSelectedIndex()+1)+"");
-                    nft.setSubCategory((subCategory.getSelectedStringIndex()+1)+"");
+                    //nft.setCurrency((currency.getSelectedIndex()+1)+"");
+                    //nft.setCategory(category.getSelectedItem().toString());
+                    //nft.setSubCategory(subCategory.getSelectedString());
                     nft.setLikes(0);
 
                     if (Connection.getInstance().updateNft(nft)){

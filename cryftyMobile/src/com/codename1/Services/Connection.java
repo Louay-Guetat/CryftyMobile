@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.codename1.uikit.pheonixui.BaseForm.*;
+
 
 /**
  *
@@ -248,7 +250,6 @@ public class Connection {
             Map<String, Object> tasksListJson
                     = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
             List<Map<String, Object>> list = (List<Map<String, Object>>) tasksListJson.get("root");
-
             for (Map<String, Object> obj : list) {
                 Nft nft = new Nft();
 
@@ -268,21 +269,30 @@ public class Connection {
                 float likes = Float.parseFloat(obj.get("likes").toString());
                 nft.setLikes((int) likes);
 
-                if(obj.get("category")!=null)
-                    nft.setCategory(obj.get("category").toString());
-                else nft.setCategory("");
+                if(obj.get("category")!=null) {
+                    for (Category cat : allCategories) {
+                        if (cat.get().equals(obj.get("category").toString()))
+                            nft.setCategory(cat);
+                    }
+                }
 
-                if(obj.get("subCategory")!=null)
-                    nft.setSubCategory(obj.get("subCategory").toString());
-                else nft.setSubCategory("");
+                if(obj.get("subCategory")!=null){
+                    for (SubCategory subCat : allSubCategories) {
+                        if (subCat.get().equals(obj.get("subCategory").toString()))
+                            nft.setSubCategory(subCat);
+                    }
+                }
 
                 if(obj.get("owner")!=null)
                     nft.setOwner(obj.get("owner").toString());
                 else nft.setOwner("");
 
-                if(obj.get("currency")!=null)
-                    nft.setCurrency(obj.get("currency").toString());
-                else nft.setCurrency("");
+                if(obj.get("currency")!=null){
+                    for (Node currency : allCurrencies) {
+                        if (currency.get().equals(obj.get("currency").toString()))
+                            nft.setCurrency(currency);
+                    }
+                }
 
                 nfts.add(nft);
             }
@@ -352,22 +362,30 @@ public class Connection {
             float likes = Float.parseFloat(tasksListJson.get("likes").toString());
             nft.setLikes((int) likes);
 
-            if(tasksListJson.get("category")!=null)
-                nft.setCategory(tasksListJson.get("category").toString());
-            else nft.setCategory("");
+            if(tasksListJson.get("category")!=null) {
+                for (Category cat : allCategories) {
+                    if (cat.get().equals(tasksListJson.get("category").toString()))
+                        nft.setCategory(cat);
+                }
+            }
 
-            if(tasksListJson.get("subCategory")!=null)
-                nft.setSubCategory(tasksListJson.get("subCategory").toString());
-            else nft.setSubCategory("");
+            if(tasksListJson.get("subCategory")!=null){
+                for (SubCategory subCat : allSubCategories) {
+                    if (subCat.get().equals(tasksListJson.get("subCategory").toString()))
+                        nft.setSubCategory(subCat);
+                }
+            }
 
             if(tasksListJson.get("owner")!=null)
                 nft.setOwner(tasksListJson.get("owner").toString());
             else nft.setOwner("");
 
-            if(tasksListJson.get("currency")!=null)
-                nft.setCurrency(tasksListJson.get("currency").toString());
-            else nft.setCurrency("");
-
+            if(tasksListJson.get("currency")!=null){
+                for (Node currency : allCurrencies) {
+                    if (currency.get().equals(tasksListJson.get("currency").toString()))
+                        nft.setCurrency(currency);
+                }
+            }
             nfts.add(nft);
 
         } catch (IOException ex) {
@@ -407,6 +425,7 @@ public class Connection {
         return categories;
     }
 
+
     public ArrayList<SubCategory> parseSubCategories(String jsonText) {
         try {
             subCategories = new ArrayList<>();
@@ -427,7 +446,10 @@ public class Connection {
                 float nbrNft = Float.parseFloat(obj.get("nbrNft").toString());
                 subCategory.setNbrNft((int)nbrNft);
 
-                subCategory.setCategory(obj.get("category").toString());
+                for (Category cat : allCategories) {
+                    if (cat.get().equals(obj.get("category").toString()))
+                        subCategory.setCategory(cat);
+                }
 
                 subCategories.add(subCategory);
             }
@@ -464,5 +486,4 @@ public class Connection {
         }
         return currencies;
     }
-
 }

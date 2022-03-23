@@ -5,13 +5,13 @@ public class SubCategory {
     private String name;
     private String creationDate;
     private int nbrNft;
-    private String category;
+    private Category category;
 
     public SubCategory(){
 
     }
 
-    public SubCategory(int id,String name, String creationDate, int nbrNft, String category) {
+    public SubCategory(int id,String name, String creationDate, int nbrNft, Category category) {
         this.id = id;
         this.name = name;
         this.creationDate = creationDate;
@@ -51,11 +51,26 @@ public class SubCategory {
         this.nbrNft = nbrNft;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return "SubCategory{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", creationDate='" + creationDate + '\'' +
+                ", nbrNft=" + nbrNft +
+                ", category='" + category + '\'' +
+                '}';
+    }
+
+    public String get(){
+        return "{id="+(float)id+"}";
     }
 }

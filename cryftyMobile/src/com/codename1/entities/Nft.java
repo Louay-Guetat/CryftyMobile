@@ -8,15 +8,16 @@ public class Nft {
     private String creationDate;
     private String image;
     private int likes;
-    private String category;
-    private String subCategory;
+    private Category category;
+    private SubCategory subCategory;
     private String owner;
-    private String currency;
+    private Node currency;
 
     public Nft() {
     }
 
-    public Nft(String title, String description, float price, String creationDate, String image, int likes, String category,String subCategory,String owner, String currency) {
+    public Nft(String title, String description, float price, String creationDate, String image, int likes,
+               Category category,SubCategory subCategory,String owner, Node currency) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -89,19 +90,19 @@ public class Nft {
         this.likes = likes;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
-    public String getSubCategory() {
+    public SubCategory getSubCategory() {
         return subCategory;
     }
 
-    public void setSubCategory(String subCategory) {
+    public void setSubCategory(SubCategory subCategory) {
         this.subCategory = subCategory;
     }
 
@@ -113,11 +114,11 @@ public class Nft {
         this.owner = owner;
     }
 
-    public String getCurrency() {
+    public Node getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(Node currency) {
         this.currency = currency;
     }
 
