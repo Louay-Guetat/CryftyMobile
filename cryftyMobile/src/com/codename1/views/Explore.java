@@ -3,6 +3,7 @@ package com.codename1.views;
 import com.codename1.Services.Connection;
 import com.codename1.Statics;
 import com.codename1.components.*;
+import com.codename1.entities.Category;
 import com.codename1.entities.Nft;
 import com.codename1.io.MultipartRequest;
 import com.codename1.ui.*;
@@ -11,6 +12,7 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.plaf.Style;
 import com.codename1.uikit.pheonixui.BaseForm;
@@ -18,6 +20,7 @@ import com.codename1.uikit.pheonixui.InboxForm;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Explore extends BaseForm {
     EncodedImage enc;
@@ -30,20 +33,69 @@ public class Explore extends BaseForm {
         current=this;
         ArrayList<Nft> nfts = Connection.getInstance().getAllNfts();
 
-        Container filterContainer = new Container(new BoxLayout(BoxLayout.Y_AXIS));
-        TextField tfRecherche = new TextField();
+
+        CheckBox cbCategory [] = new CheckBox[allCategories.size()];
+        Container categoryContainer = new Container();
+        for(int i=0; i<cbCategory.length;i++){
+            cbCategory[i] = new CheckBox(allCategories.get(i).getName());
+            categoryContainer.addComponent(cbCategory[i]);
+        }
+
+        CheckBox cbSubCategories [] = new CheckBox[allSubCategories.size()];
+        Container subCategoryContainer = new Container();
+        for(int i=0; i<cbSubCategories.length;i++){
+            cbSubCategories[i] = new CheckBox(allSubCategories.get(i).getName());
+            subCategoryContainer.addComponent(cbSubCategories[i]);
+        }
+
+        CheckBox cbCurrencies [] = new CheckBox[allCurrencies.size()];
+        Container currenciesContainer = new Container();
+        for(int i=0; i<cbCurrencies.length;i++){
+            cbCurrencies[i] = new CheckBox(allCurrencies.get(i).getCoidCode());
+            currenciesContainer.addComponent(cbCurrencies[i]);
+        }
+
+
+        TextField tfRecherche = new TextField("","Search by title");
+        TextField prixMin = new TextField("","minimum price");
+        TextField prixMax = new TextField("","maximum price");
+        Container maxMinContainer = new Container();
+        //maxMinContainer.addAll(prixMin, prixMax,separator);
+
+        RadioButton nonePrice = new RadioButton("None");
+        RadioButton prixCroissant = new RadioButton("Tri par prix croissant");
+        RadioButton prixDecroissant = new RadioButton("Tri par prix decroissant");
+        RadioButton triPrix [] = {nonePrice,prixCroissant,prixDecroissant};
+        Container priceContainer = new Container();
+        //priceContainer.addAll(triPrix[0],triPrix[1],triPrix[2],separator);
+
+        RadioButton noneLikes = new RadioButton("None");
+        RadioButton likesCroissant = new RadioButton("Tri par pertinence croissante");
+        RadioButton likesDecroissant = new RadioButton("Tri par pertinence decroissante");
+        RadioButton triLikes [] = {noneLikes,likesCroissant,likesDecroissant};
+        Container LikesContainer = new Container();
+        //LikesContainer.addAll(triLikes[0],triLikes[1],triLikes[2],separator);
+
         Button btnFilter = new Button("Search");
-        filterContainer.addAll(tfRecherche,btnFilter);
-        addComponent(filterContainer);
+
+        Container filterContainer = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+        //filterContainer.addAll(tfRecherche,separator,categoryContainer,subCategoryContainer,currenciesContainer,
+          //      maxMinContainer,priceContainer,LikesContainer,btnFilter);
+
 
         setLayout(new BoxLayout(BoxLayout.Y_AXIS));
         for(Nft nft : nfts){
+            Label separator = new Label(" ");
+            separator.setUIID("separator");
+            separator.setShowEvenIfBlank(true);
+
             try{
                 imgv = new ScaleImageButton(Image.createImage("/load.png"));
             }catch(IOException ex){
                 Dialog.show("Error",ex.getMessage(),"ok",null);
             }
 
+            Container nftContainer = new Container(new BoxLayout(BoxLayout.Y_AXIS));
             Container gui_Container_1 = new Container(new BorderLayout());
             Container gui_imageContainer1 = new Container(new BorderLayout());
             Container gui_Container_2 = new Container(new BorderLayout());
@@ -53,12 +105,6 @@ public class Explore extends BaseForm {
             Label gui_Text_Area_1 = new Label();
             MultiButton gui_Multi_Button_2 = new MultiButton();
             MultiButton gui_LA2 = new MultiButton();
-            Label gui_separator1 = new Label();
-            Label gui_Label_1_1_1 = new Label();
-
-            gui_separator1.setShowEvenIfBlank(true);
-            gui_Label_1_1_1.setShowEvenIfBlank(true);
-
 
             try{
                 enc = EncodedImage.create("/load.png");
@@ -71,7 +117,6 @@ public class Explore extends BaseForm {
 
             gui_imageContainer1.add(BorderLayout.CENTER, imgv);
 
-            addComponent(gui_Container_1);
             gui_Container_1.setName("Container_1");
             gui_Container_1.addComponent(BorderLayout.CENTER, gui_Multi_Button_1);
             gui_Container_1.addComponent(BorderLayout.EAST, gui_LA);
@@ -90,7 +135,6 @@ public class Explore extends BaseForm {
             gui_LA.setPropertyValue("uiid1", "SlightlySmallerFontLabel");
             gui_LA.setPropertyValue("uiid2", "RedLabelRight");
 
-            addComponent(gui_imageContainer1);
             gui_imageContainer1.setName("imageContainer1");
             gui_imageContainer1.addComponent(BorderLayout.SOUTH, gui_Container_2);
 
@@ -101,7 +145,6 @@ public class Explore extends BaseForm {
             gui_Text_Area_1.setUIID("SlightlySmallerFontLabelLeft");
             gui_Text_Area_1.setName("Text_Area_1");
 
-            addComponent(gui_Container_3);
             gui_Container_3.setName("Container_3");
             gui_Container_3.addComponent(BorderLayout.CENTER, gui_Multi_Button_2);
             gui_Container_3.addComponent(BorderLayout.EAST, gui_LA2);
@@ -119,6 +162,9 @@ public class Explore extends BaseForm {
             gui_LA2.setPropertyValue("line1", nft.getLikes()+"");
             gui_LA2.setPropertyValue("uiid1", "SlightlySmallerFontLabel");
             gui_LA2.setPropertyValue("uiid2", "RedLabelRight");
+
+            nftContainer.addAll(gui_Container_1,gui_imageContainer1,gui_Container_3,separator);
+            addComponent(nftContainer);
 
             //actionListeners
             gui_Multi_Button_1.addActionListener((e)-> {
@@ -159,6 +205,8 @@ public class Explore extends BaseForm {
 
         }
         getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
+        Toolbar filters = this.getToolbar();
+        filters.addComponentToRightSideMenu(filterContainer);
 
         FloatingActionButton fab  = FloatingActionButton.createFAB(FontImage.MATERIAL_ADD);
         RoundBorder rb = (RoundBorder)fab.getUnselectedStyle().getBorder();
@@ -176,9 +224,7 @@ public class Explore extends BaseForm {
         btnFilter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                if(!tfRecherche.getText().isEmpty()){
 
-                }
             }
         });
     }

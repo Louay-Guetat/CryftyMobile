@@ -56,13 +56,12 @@ public class afficheNft extends BaseForm {
             Label gui_Text_Area_1 = new Label();
             MultiButton gui_Multi_Button_2 = new MultiButton();
             MultiButton gui_LA2 = new MultiButton();
-            Label gui_separator1 = new Label();
-            Label gui_Label_1_1_1 = new Label();
             Button btnUpdateNft = new Button();
             Button btnDeleteNft = new Button();
 
-            gui_separator1.setShowEvenIfBlank(true);
-            gui_Label_1_1_1.setShowEvenIfBlank(true);
+            Label separator = new Label(" ");
+            separator.setUIID("separator");
+            separator.setShowEvenIfBlank(true);
 
             try{
                 enc = EncodedImage.create("/load.png");
@@ -138,6 +137,8 @@ public class afficheNft extends BaseForm {
             if(nft.getOwner().substring(4,5).equals(client.getId()+"")){
                 add(buttonsContainer);
             }
+
+            addComponent(separator);
 
             //ActionListeners
             btnUpdateNft.addActionListener(new ActionListener() {
