@@ -16,6 +16,8 @@ import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.spinner.Picker;
 import com.codename1.uikit.pheonixui.BaseForm;
+import com.codename1.uikit.pheonixui.InboxForm;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -176,14 +178,29 @@ public class AddNft extends BaseForm {
                     nft.setImage(image);
                     nft.setDescription(description.getText());
                     nft.setPrice(Float.parseFloat(price.getText()));
-                    //nft.setCurrency((currency.getSelectedIndex()+1)+"");
-                    //nft.setCategory((category.getSelectedItem()));
-                    //nft.setSubCategory(subCategory.getSelectedString());
+                    for (Category cat : allCategories) {
+                        if (cat.getName().equals(category.getSelectedItem()))
+                            nft.setCategory(cat);
+                    }
+                    for (SubCategory subCat : allSubCategories) {
+                        if (subCat.getName().equals(subCategory.getSelectedString()))
+                            nft.setSubCategory(subCat);
+                    }
+
+                    for (Node curr : allCurrencies) {
+                        if (curr.getCoidCode().equals(currency.getSelectedItem()))
+                            nft.setCurrency(curr);
+                    }
                     nft.setLikes(0);
                     nft.setOwner(client.getId()+"");
 
                     if (Connection.getInstance().addNft(nft)){
+                        MultipartRequest cr = new MultipartRequest();
+                        InfiniteProgress prog = new InfiniteProgress();
                         Dialog.show("success", "nft ajouté", "ok",null);
+                        Dialog dlg = prog.showInifiniteBlocking();
+                        new Explore(new InboxForm()).show();
+                        cr.setDisposeOnCompletion(dlg);
                     }
                     else{
                         Dialog.show("error", "Request erroné", "ok",null);
@@ -234,11 +251,10 @@ public class AddNft extends BaseForm {
 
 
         // updateForm
-    public AddNft(Form previous,int id ,String titre, String desc
-                    ,float prix, String coinCode, String categorie, String sousCategorie) {
+    public AddNft(Form previous,Nft nft) {
 
         setLayout(BoxLayout.y());
-        setTitle("Add Nft");
+        setTitle("Update "+nft.getTitle());
 
 
         Label lblTitle = new Label("Titre");
@@ -247,9 +263,9 @@ public class AddNft extends BaseForm {
         Label lblDescription = new Label("Description");
         Label lblCategory = new Label("Category");
         Label lblSubCategory = new Label("SubCategory");
-        TextField title = new TextField(titre,"Title",0,TextArea.ANY);
-        TextArea description = new TextArea(desc);
-        TextField price = new TextField(prix+"","Price",0,TextArea.ANY);
+        TextField title = new TextField(nft.getTitle(),"Title",0,TextArea.ANY);
+        TextArea description = new TextArea(nft.getDescription());
+        TextField price = new TextField(nft.getPrice()+"","Price",0,TextArea.ANY);
         ComboBox currency = new ComboBox();
         ComboBox category = new ComboBox();
         Picker subCategory = new Picker();
@@ -293,26 +309,22 @@ public class AddNft extends BaseForm {
         addComponent(buttonContainer);
         buttonContainer.addComponent(Update);
 
-        Nft nft = new Nft();
-
-
         for(Node curr : allCurrencies){
             currency.addItem(curr.getCoidCode());
         }
-        currency.setSelectedItem(coinCode);
+        currency.setSelectedItem(nft.getCurrency().getCoidCode());
 
 
         for(Category cat : allCategories){
             category.addItem(cat.getName());
         }
-        System.out.println(categorie);
-        category.setSelectedItem(categorie);
+        category.setSelectedItem(nft.getCategory().getName());
 
 
 
         ArrayList subs = new ArrayList();
         for(SubCategory subCat : allSubCategories){
-            if(subCat.getCategory().getName().equals(categorie))
+            if(subCat.getCategory().getName().equals(nft.getCategory().getName()))
                 subs.add(subCat.getName());
         }
         if(subs.size()!=0){
@@ -327,7 +339,7 @@ public class AddNft extends BaseForm {
             subCategory.setText("No subCategories to show");
             subCategory.setEnabled(false);
         }
-        subCategory.setSelectedString(sousCategorie);
+        subCategory.setSelectedString(nft.getSubCategory().getName());
 
 
         //ActionListeners
@@ -371,18 +383,32 @@ public class AddNft extends BaseForm {
                     Dialog.show("Error", "You need to specify a subCategory", "OK", null);
                 }
                 else{
-                    nft.setId(id);
                     nft.setTitle(title.getText());
                     nft.setImage(image);
                     nft.setDescription(description.getText());
                     nft.setPrice(Float.parseFloat(price.getText()));
-                    //nft.setCurrency((currency.getSelectedIndex()+1)+"");
-                    //nft.setCategory(category.getSelectedItem().toString());
-                    //nft.setSubCategory(subCategory.getSelectedString());
+                    for (Category cat : allCategories) {
+                        if (cat.getName().equals(category.getSelectedItem()))
+                            nft.setCategory(cat);
+                    }
+                    for (SubCategory subCat : allSubCategories) {
+                        if (subCat.getName().equals(subCategory.getSelectedString()))
+                            nft.setSubCategory(subCat);
+                    }
+
+                    for (Node curr : allCurrencies) {
+                        if (curr.getCoidCode().equals(currency.getSelectedItem()))
+                            nft.setCurrency(curr);
+                    }
                     nft.setLikes(0);
 
                     if (Connection.getInstance().updateNft(nft)){
+                        MultipartRequest cr = new MultipartRequest();
+                        InfiniteProgress prog = new InfiniteProgress();
                         Dialog.show("Success", "NFT Modifié", "ok",null);
+                        Dialog dlg = prog.showInifiniteBlocking();
+                        new afficheNft(new Explore(new InboxForm()),nft.getId()).showBack();
+                        cr.setDisposeOnCompletion(dlg);
                     }
                     else{
                         Dialog.show("error", "Request erroné", "ok",null);
@@ -390,7 +416,9 @@ public class AddNft extends BaseForm {
                 }
             }
         });
-        getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
+        getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> {
+            new afficheNft(new Explore(new InboxForm()),nft.getId()).showBack();
+        });
     }
 
 }

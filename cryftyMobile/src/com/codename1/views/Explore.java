@@ -2,44 +2,44 @@ package com.codename1.views;
 
 import com.codename1.Services.Connection;
 import com.codename1.Statics;
-import com.codename1.components.FloatingActionButton;
-import com.codename1.components.ImageViewer;
-import com.codename1.components.MultiButton;
-import com.codename1.entities.Category;
+import com.codename1.components.*;
 import com.codename1.entities.Nft;
-import com.codename1.io.JSONParser;
+import com.codename1.io.MultipartRequest;
 import com.codename1.ui.*;
 import com.codename1.ui.Form;
-import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
-import com.codename1.ui.geom.Rectangle;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.plaf.RoundBorder;
+import com.codename1.ui.plaf.Style;
 import com.codename1.uikit.pheonixui.BaseForm;
 import com.codename1.uikit.pheonixui.InboxForm;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class Explore extends BaseForm {
     EncodedImage enc;
+    private static boolean situation=false;
     Image imgs;
-    ImageViewer imgv;
+    ScaleImageButton imgv;
     Form current;
 
     public Explore(Form previous){
         current=this;
         ArrayList<Nft> nfts = Connection.getInstance().getAllNfts();
+
+        Container filterContainer = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+        TextField tfRecherche = new TextField();
+        Button btnFilter = new Button("Search");
+        filterContainer.addAll(tfRecherche,btnFilter);
+        addComponent(filterContainer);
+
         setLayout(new BoxLayout(BoxLayout.Y_AXIS));
-
         for(Nft nft : nfts){
-
             try{
-                imgv = new ImageViewer(Image.createImage("/load.png"));
+                imgv = new ScaleImageButton(Image.createImage("/load.png"));
             }catch(IOException ex){
                 Dialog.show("Error",ex.getMessage(),"ok",null);
             }
@@ -67,7 +67,7 @@ public class Explore extends BaseForm {
             }
             String url = Statics.URL_REP_IMAGES + nft.getImage();
             imgs = URLImage.createToStorage(enc,url,url,URLImage.RESIZE_SCALE);
-            imgv.setImage(imgs);
+            imgv.setIcon(imgs);
 
             gui_imageContainer1.add(BorderLayout.CENTER, imgv);
 
@@ -111,14 +111,52 @@ public class Explore extends BaseForm {
             gui_Multi_Button_2.setPropertyValue("line1", "" + nft.getPrice() +" "+ nft.getCurrency().getCoidCode());
             gui_Multi_Button_2.setPropertyValue("uiid1", "Label");
 
-            gui_LA2.setUIID("Label");
             gui_LA2.setName("likes");
-            gui_LA2.setPropertyValue("line1", "" + nft.getLikes());
+            gui_LA2.setUIID("NewsTopLine");
+            Style likeStyle= new Style(gui_LA2.getUnselectedStyle());
+            FontImage like = FontImage.createMaterial(FontImage.MATERIAL_SEND,likeStyle);
+            gui_LA2.setIcon(like);
+            gui_LA2.setPropertyValue("line1", nft.getLikes()+"");
             gui_LA2.setPropertyValue("uiid1", "SlightlySmallerFontLabel");
             gui_LA2.setPropertyValue("uiid2", "RedLabelRight");
 
             //actionListeners
-            gui_Multi_Button_1.addActionListener((e)-> new afficheNft(current,nft.getId()).show());
+            gui_Multi_Button_1.addActionListener((e)-> {
+                MultipartRequest cr = new MultipartRequest();
+                InfiniteProgress prog = new InfiniteProgress();
+                Dialog dlg = prog.showInifiniteBlocking();
+                new afficheNft(current, nft.getId()).showBack();
+                cr.setDisposeOnCompletion(dlg);
+            });
+
+            imgv.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    MultipartRequest cr = new MultipartRequest();
+                    InfiniteProgress prog = new InfiniteProgress();
+                    Dialog dlg = prog.showInifiniteBlocking();
+                    new afficheNft(current, nft.getId()).showBack();
+                    cr.setDisposeOnCompletion(dlg);
+                }
+            });
+
+            gui_LA2.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    if (Connection.getInstance().like(nft)){
+                        if(situation == false){
+                            gui_LA2.setPropertyValue("line1", nft.getLikes()+1+"");
+                            situation=true;
+                        }
+                        else{
+                            gui_LA2.setPropertyValue("line1", nft.getLikes()+"");
+                            situation=false;
+                        }
+                    }
+                }
+            });
+
+
         }
         getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
 
@@ -134,6 +172,15 @@ public class Explore extends BaseForm {
             }
         });
 
+
+        btnFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if(!tfRecherche.getText().isEmpty()){
+
+                }
+            }
+        });
     }
 }
 

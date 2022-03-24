@@ -19,10 +19,12 @@
 
 package com.codename1.uikit.pheonixui;
 
+import com.codename1.components.InfiniteProgress;
 import com.codename1.entities.Category;
 import com.codename1.entities.Client;
 import com.codename1.entities.Node;
 import com.codename1.entities.SubCategory;
+import com.codename1.io.MultipartRequest;
 import com.codename1.ui.*;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.util.Resources;
@@ -74,7 +76,16 @@ public class BaseForm extends Form {
         getToolbar().addCommandToSideMenu("Stats", statsImage, e -> new StatsForm(res).show());
         getToolbar().addCommandToSideMenu("Calendar", calendarImage, e -> new CalendarForm(res).show());
         getToolbar().addCommandToSideMenu("Map", null, e -> {});
-        getToolbar().addCommandToSideMenu("Explore", trendingImage, e -> new Explore(current).show());
+
+        getToolbar().addCommandToSideMenu("Explore", trendingImage, e -> {
+            MultipartRequest cr = new MultipartRequest();
+            InfiniteProgress prog = new InfiniteProgress();
+            Dialog dlg = prog.showInifiniteBlocking();
+            cr.setDisposeOnCompletion(dlg);
+            new Explore(current).show();
+            cr.setDisposeOnCompletion(dlg);
+        });
+
         getToolbar().addCommandToSideMenu("Add NFT", trendingImage, e -> new AddNft(current).show());
         getToolbar().addCommandToSideMenu("Settings", trendingImage, e -> new TrendingForm().show());
         getToolbar().addCommandToSideMenu("Wallets", walletsImage, e -> new WalletsForm().show());

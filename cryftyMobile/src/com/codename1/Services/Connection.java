@@ -52,8 +52,8 @@ public class Connection {
         System.out.println(nft);
         System.out.println("********");
         String url = Statics.BASE_URL + "/nft/AjoutNftJson?title="+nft.getTitle()+"&description="+nft.getDescription()
-                +"&price="+nft.getPrice()+"&likes="+nft.getLikes()+"&image="+nft.getImage()+"&category="+nft.getCategory()
-                +"&subCategory="+nft.getSubCategory()+"&currency="+nft.getCurrency()+"&owner="+nft.getOwner();
+                +"&price="+nft.getPrice()+"&likes="+nft.getLikes()+"&image="+nft.getImage()+"&category="+nft.getCategory().getId()
+                +"&subCategory="+nft.getSubCategory().getId()+"&currency="+nft.getCurrency().getId()+"&owner="+nft.getOwner();
 
         req.setUrl(url);
         System.out.println(req.getUrl());
@@ -72,8 +72,8 @@ public class Connection {
         System.out.println(nft);
         System.out.println("********");
         String url = Statics.BASE_URL + "/nft/ModifierNftJson/"+nft.getId()+"?title="+nft.getTitle()+"&description="+nft.getDescription()
-                +"&price="+nft.getPrice()+"&likes="+nft.getLikes()+"&image="+nft.getImage()+"&category="+nft.getCategory()
-                +"&subCategory="+nft.getSubCategory()+"&currency="+nft.getCurrency();
+                +"&price="+nft.getPrice()+"&likes="+nft.getLikes()+"&image="+nft.getImage()+"&category="+nft.getCategory().getId()
+                +"&subCategory="+nft.getSubCategory().getId()+"&currency="+nft.getCurrency().getId();
 
         req.setUrl(url);
         System.out.println(req.getUrl());
@@ -242,6 +242,24 @@ public class Connection {
         return comments;
     }
 
+    public boolean like(Nft nft){
+        System.out.println(nft);
+        System.out.println("********");
+        String url = Statics.BASE_URL + "/nft/likedJson/"+nft.getId()+"?nft="+nft.getId()+"&client="+client.getId();
+        req.setUrl(url);
+        System.out.println(req.getUrl());
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                resultOK = req.getResponseCode() == 200; //Code HTTP 200 OK
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return resultOK;
+    }
+
+    //parsers
 
     public ArrayList<Nft> parseNfts(String jsonText) {
         try {

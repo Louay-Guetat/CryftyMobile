@@ -6,16 +6,19 @@
 package com.codename1.views;
 
 import com.codename1.Statics;
+import com.codename1.components.InfiniteProgress;
 import com.codename1.components.MultiButton;
 import com.codename1.entities.Nft;
 import com.codename1.entities.NftComment;
 import com.codename1.Services.Connection;
 import com.codename1.components.ImageViewer;
+import com.codename1.io.MultipartRequest;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.plaf.Style;
 import com.codename1.uikit.pheonixui.BaseForm;
 import com.codename1.uikit.pheonixui.InboxForm;
 import java.io.IOException;
@@ -42,7 +45,6 @@ public class afficheNft extends BaseForm {
             }catch(IOException ex){
                 Dialog.show("Error",ex.getMessage(),"ok",null);
             }
-
             Container gui_Container_1 = new Container(new BorderLayout());
             Container gui_imageContainer1 = new Container(new BorderLayout());
             Container gui_Container_2 = new Container(new BorderLayout());
@@ -56,8 +58,8 @@ public class afficheNft extends BaseForm {
             MultiButton gui_LA2 = new MultiButton();
             Label gui_separator1 = new Label();
             Label gui_Label_1_1_1 = new Label();
-            Button btnUpdateNft = new Button("Update");
-            Button btnDeleteNft = new Button("Delete");
+            Button btnUpdateNft = new Button();
+            Button btnDeleteNft = new Button();
 
             gui_separator1.setShowEvenIfBlank(true);
             gui_Label_1_1_1.setShowEvenIfBlank(true);
@@ -123,6 +125,16 @@ public class afficheNft extends BaseForm {
             buttonsContainer.addComponent(BorderLayout.EAST,btnUpdateNft);
             buttonsContainer.addComponent(BorderLayout.WEST,btnDeleteNft);
 
+            btnUpdateNft.setUIID("NewsTopLine");
+            Style updateStyle = new Style(btnUpdateNft.getUnselectedStyle());
+            FontImage updateIcon = FontImage.createMaterial(FontImage.MATERIAL_SECURITY_UPDATE,updateStyle);
+            btnUpdateNft.setIcon(updateIcon);
+
+            btnDeleteNft.setUIID("NewsTopLine");
+            Style deleteStyle = new Style(btnDeleteNft.getUnselectedStyle());
+            FontImage deleteIcon = FontImage.createMaterial(FontImage.MATERIAL_DELETE,deleteStyle);
+            btnDeleteNft.setIcon(deleteIcon);
+
             if(nft.getOwner().substring(4,5).equals(client.getId()+"")){
                 add(buttonsContainer);
             }
@@ -131,18 +143,20 @@ public class afficheNft extends BaseForm {
             btnUpdateNft.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
-                    new AddNft(previous,nft.getId(),nft.getTitle(),nft.getDescription(),nft.getPrice()
-                    ,nft.getCurrency().getCoidCode(),nft.getCategory().getName(),nft.getSubCategory().getName()).show();
+                    new AddNft(previous,nft).show();
                 }
             });
 
             btnDeleteNft.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
+                    MultipartRequest cr = new MultipartRequest();
+                    InfiniteProgress prog = new InfiniteProgress();
                     Connection.getInstance().deleteNft(nft);
                     Dialog.show("Success","Nft Supprimé","ok",null);
-                    Form indexForm = new InboxForm();
-                    new Explore(indexForm).show();
+                    Dialog dlg = prog.showInifiniteBlocking();
+                    new Explore(new InboxForm()).showBack();
+                    cr.setDisposeOnCompletion(dlg);
                 }
             });
 
@@ -198,6 +212,9 @@ public class afficheNft extends BaseForm {
         btnComment.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+                MultipartRequest cr = new MultipartRequest();
+                InfiniteProgress prog = new InfiniteProgress();
+                Dialog dlg = new Dialog() ;
                 if(!tfComment.getText().isEmpty()){
                     NftComment nftComment = new NftComment();
                     nftComment.setComment(tfComment.getText());
@@ -205,8 +222,10 @@ public class afficheNft extends BaseForm {
                     nftComment.setUser(client.getId()+"");
                     Connection.getInstance().addComment(nftComment);
                     Dialog.show("success", "commentaire ajouté", "ok",null);
+                    dlg = prog.showInifiniteBlocking();
                 }
                 new afficheNft(new Explore(new InboxForm()),id).show();
+                cr.setDisposeOnCompletion(dlg);
             }
         });
         getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
