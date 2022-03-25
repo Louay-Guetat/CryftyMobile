@@ -139,6 +139,54 @@ public class Connection {
         return nfts;
     }
 
+    public ArrayList<Nft> searchNft(String title, String[]categories, String[] subCategories, String[]currencies
+                            , String prixMin, String prixMax, String prixOrder, String likesOrder){
+        req = new ConnectionRequest();
+
+        String cats = "";
+        String subCats="";
+        String currs ="";
+        for(int i=0;i<categories.length;i++){
+            if(i==0)
+                cats = cats + categories[i];
+            else
+                cats= cats+ "," +categories[i];
+        }
+
+        for(int i=0;i<subCategories.length;i++){
+            if(i==0)
+                subCats = subCats + subCategories[i];
+            else
+                subCats= subCats+ "," +subCategories[i];
+        }
+
+        for(int i=0;i<currencies.length;i++){
+            if (i==0)
+                currs= currs + currencies[i];
+            else
+                currs= currs+ "," +currencies[i];
+        }
+
+        System.out.println(cats+"\n"+subCats+"\n"+currs);
+
+        String url = Statics.BASE_URL + "/nft/searchNftJson?title="+title;
+                /*+"&categories=%5B"+cats+"%5D"+
+                "&subCategories=%5B"+subCats+"%5D"+"&currencies=%5B"+currs+"%5D"+
+                "&prixMin="+prixMin+"&prixMax="+prixMax+"&prixOrder="+prixOrder+"&likesOrder="+likesOrder;*/
+        System.out.println("===>" + url);
+        req.setUrl(url);
+        req.setPost(false);
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                nfts = parseNfts(new String(req.getResponseData()));
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return nfts;
+    }
+
     public ArrayList<Category> getAllCategories() {
         req = new ConnectionRequest();
 
