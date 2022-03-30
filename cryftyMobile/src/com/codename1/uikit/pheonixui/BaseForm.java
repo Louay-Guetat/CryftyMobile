@@ -19,18 +19,32 @@
 
 package com.codename1.uikit.pheonixui;
 
+import com.codename1.components.InfiniteProgress;
+import com.codename1.entities.Category;
+import com.codename1.entities.Client;
+import com.codename1.entities.Node;
+import com.codename1.entities.SubCategory;
+import com.codename1.io.MultipartRequest;
 import com.codename1.ui.*;
-import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.util.Resources;
+import com.codename1.views.AddNft;
+import com.codename1.views.Explore;
+import com.codename1.Services.Connection;
 
-/**
- * Utility methods common to forms e.g. for binding the side menu
- *
- * @author Shai Almog
- */
+import java.util.ArrayList;
+import java.util.Currency;
+
 public class BaseForm extends Form {
+    Form current;
+    public static ArrayList<Category> allCategories = Connection.getInstance().getAllCategories();
+    public static ArrayList<SubCategory> allSubCategories = Connection.getInstance().getAllSubCategories();
+    public static ArrayList<Node> allCurrencies = Connection.getInstance().getAllCurrencies();
+    public static Client client = new Client(1,"Louay","Guetat","louay.guetat@esprit.tn",
+                    55160398,23,"278, rue bab saadoune");
+
     public void installSidemenu(Resources res) {
+        current=this;
         Image selection = res.getImage("selection-in-sidemenu.png");
         
         Image inboxImage = null;
@@ -62,8 +76,18 @@ public class BaseForm extends Form {
         getToolbar().addCommandToSideMenu("Stats", statsImage, e -> new StatsForm(res).show());
         getToolbar().addCommandToSideMenu("Calendar", calendarImage, e -> new CalendarForm(res).show());
         getToolbar().addCommandToSideMenu("Map", null, e -> {});
-        getToolbar().addCommandToSideMenu("Trending", trendingImage, e -> new TrendingForm(res).show());
-        getToolbar().addCommandToSideMenu("Settings", null, e -> {});
+
+        getToolbar().addCommandToSideMenu("Explore", trendingImage, e -> {
+            MultipartRequest cr = new MultipartRequest();
+            InfiniteProgress prog = new InfiniteProgress();
+            Dialog dlg = prog.showInifiniteBlocking();
+            cr.setDisposeOnCompletion(dlg);
+            new Explore(current).show();
+            cr.setDisposeOnCompletion(dlg);
+        });
+
+        getToolbar().addCommandToSideMenu("Add NFT", trendingImage, e -> new AddNft(current).show());
+        getToolbar().addCommandToSideMenu("Settings", trendingImage, e -> new TrendingForm().show());
         getToolbar().addCommandToSideMenu("Wallets", walletsImage, e -> new WalletsForm().show());
 
         // spacer
