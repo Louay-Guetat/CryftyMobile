@@ -10,6 +10,7 @@ import com.codename1.entities.Node;
 import com.codename1.entities.SubCategory;
 import com.codename1.io.MultipartRequest;
 import com.codename1.io.NetworkManager;
+import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
@@ -192,7 +193,7 @@ public class AddNft extends BaseForm {
                             nft.setCurrency(curr);
                     }
                     nft.setLikes(0);
-                    nft.setOwner(client.getId()+"");
+                    nft.setOwner(Preferences.get("id","1"));
 
                     if (Connection.getInstance().addNft(nft)){
                         MultipartRequest cr = new MultipartRequest();

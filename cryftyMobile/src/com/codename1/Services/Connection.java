@@ -7,11 +7,7 @@ package com.codename1.Services;
 
 import com.codename1.entities.*;
 import com.codename1.Statics;
-import com.codename1.io.CharArrayReader;
-import com.codename1.io.ConnectionRequest;
-import com.codename1.io.JSONParser;
-import com.codename1.io.NetworkEvent;
-import com.codename1.io.NetworkManager;
+import com.codename1.io.*;
 import com.codename1.ui.events.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -293,7 +289,7 @@ public class Connection {
     public boolean like(Nft nft){
         System.out.println(nft);
         System.out.println("********");
-        String url = Statics.BASE_URL + "/nft/likedJson/"+nft.getId()+"?nft="+nft.getId()+"&client="+client.getId();
+        String url = Statics.BASE_URL + "/nft/likedJson/"+nft.getId()+"?nft="+nft.getId()+"&client="+ Preferences.get("id", "1");
         req.setUrl(url);
         System.out.println(req.getUrl());
         req.addResponseListener(new ActionListener<NetworkEvent>() {

@@ -125,6 +125,7 @@ public class Explore extends BaseForm {
 
         setLayout(new BoxLayout(BoxLayout.Y_AXIS));
         for(Nft nft : nfts){
+            System.out.println("NFT");
             Label separator = new Label(" ");
             separator.setUIID("separator");
             separator.setShowEvenIfBlank(true);
@@ -191,8 +192,11 @@ public class Explore extends BaseForm {
 
             gui_Multi_Button_2.setUIID("Label");
             gui_Multi_Button_2.setName("Multi_Button_2");
-            gui_Multi_Button_2.setPropertyValue("line1", "" + nft.getPrice() +" "+ nft.getCurrency().getCoidCode());
+            System.out.println(nft.getPrice());
+
+//            gui_Multi_Button_2.setPropertyValue("line1", "" + nft.getPrice() +" "+ nft.getCurrency().getCoidCode());
             gui_Multi_Button_2.setPropertyValue("uiid1", "Label");
+
 
             gui_LA2.setName("likes");
             gui_LA2.setUIID("NewsTopLine");

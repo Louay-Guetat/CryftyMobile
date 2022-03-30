@@ -13,6 +13,7 @@ import com.codename1.entities.NftComment;
 import com.codename1.Services.Connection;
 import com.codename1.components.ImageViewer;
 import com.codename1.io.MultipartRequest;
+import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
@@ -135,7 +136,7 @@ public class afficheNft extends BaseForm {
             FontImage deleteIcon = FontImage.createMaterial(FontImage.MATERIAL_DELETE,deleteStyle);
             btnDeleteNft.setIcon(deleteIcon);
 
-            if(nft.getOwner().substring(4,5).equals(client.getId()+"")){
+            if(nft.getOwner().substring(4,5).equals(Preferences.get("id","1")+"")){
                 add(buttonsContainer);
             }
 
@@ -204,7 +205,7 @@ public class afficheNft extends BaseForm {
 
 
 
-            if(comment.getUser().substring(4,5).equals(client.getId()+"")){
+            if(comment.getUser().substring(4,5).equals(Preferences.get("id","1")+"")){
                 add(buttonsCmtContainer);
                 buttonsCmtContainer.addComponent(updateComment);
                 buttonsCmtContainer.addComponent(deleteComment);
@@ -226,7 +227,7 @@ public class afficheNft extends BaseForm {
                     NftComment nftComment = new NftComment();
                     nftComment.setComment(tfComment.getText());
                     nftComment.setNft(id+"");
-                    nftComment.setUser(client.getId()+"");
+                    nftComment.setUser(Preferences.get("id","1")+"");
                     Connection.getInstance().addComment(nftComment);
                     Dialog.show("success", "commentaire ajouté", "ok",null);
                     dlg = prog.showInifiniteBlocking();
