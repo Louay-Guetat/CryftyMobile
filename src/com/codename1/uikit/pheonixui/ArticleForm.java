@@ -10,6 +10,7 @@ import com.codename1.services.servicesblogs;
 import com.codename1.share.EmailShare;
 import com.codename1.share.FacebookShare;
 import com.codename1.share.SMSShare;
+import com.codename1.share.ShareService;
 import com.codename1.ui.*;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
@@ -55,6 +56,7 @@ public class ArticleForm extends BaseForm {
             Container gui_Container_2 = new Container(new BorderLayout());
             TextArea gui_Text_Area_1 = new TextArea();
           Button gui_Button_9 = new Button();
+        Button gui_Button_10 = new Button();
 
         Label gui_separator1 = new Label();
             //  private com.codename1.ui.Container gui_null_1_1 = new com.codename1.ui.Container(new com.codename1.ui.layouts.BorderLayout());
@@ -98,7 +100,11 @@ public class ArticleForm extends BaseForm {
         gui_Button_9.setText("");
         gui_Button_9.setUIID("Label");
         gui_Button_9.setName("Button_9");
-        FontImage.setMaterialIcon(gui_Button_9, FontImage.MATERIAL_PUBLIC);
+        FontImage.setMaterialIcon(gui_Button_9, FontImage.MATERIAL_ASSISTANT_NAVIGATION);
+        gui_Button_10.setText("");
+        gui_Button_10.setUIID("Label");
+        gui_Button_10.setName("Button_10");
+        FontImage.setMaterialIcon(gui_Button_10, FontImage.MATERIAL_PUBLIC);
             gui_Text_Area_2.setRows(2);
             gui_Text_Area_2.setColumns(100);
             gui_Text_Area_2.setGrowByContent(true);
@@ -112,6 +118,7 @@ public class ArticleForm extends BaseForm {
             gui_Container_1.addComponent(BorderLayout.CENTER, gui_Multi_Button_1);
             gui_Container_1.addComponent(BorderLayout.EAST, gui_LA);
         gui_Container_2.addComponent(BorderLayout.EAST, gui_Button_9);
+        gui_Container_2.addComponent(BorderLayout.WEST, gui_Button_10);
             gui_Multi_Button_1.setUIID("Label");
             gui_Multi_Button_1.setName("Multi_Button_1");
             gui_Multi_Button_1.setPropertyValue("line1", "" + rec.getTitle());
@@ -156,6 +163,7 @@ public class ArticleForm extends BaseForm {
         sb.setImageToShare(imageFile, "image/png");
 
         gui_Button_9.addActionListener(e -> {  new EmailShare().share(rec.getContents());});
+        gui_Button_10.addActionListener(e -> {  new FacebookShare().share(rec.getContents());});
         //gui_Button_9.addActionListener(e -> { hi.show();});
 
 

@@ -205,7 +205,7 @@ for(BlogArticle rec : list1){
             gui_Multi_Button_1.setPropertyValue("uiid2", "RedLabel");
             gui_LA.setUIID("Label");
             gui_LA.setName("xxx");
-            gui_LA.setPropertyValue("line1", "" + rec.getDate());
+            gui_LA.setPropertyValue("line1", "" + rec.getDate().substring(0,10));
             gui_LA.setPropertyValue("line2", "" + rec.getAuthor());
             gui_LA.setPropertyValue("uiid1", "SlightlySmallerFontLabel");
             gui_LA.setPropertyValue("uiid2", "RedLabelRight");

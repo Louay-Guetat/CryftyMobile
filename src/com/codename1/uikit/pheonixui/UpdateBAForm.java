@@ -129,6 +129,7 @@ public class UpdateBAForm extends BaseForm {
             r.setTitle(title.getText());
             r.setContents(contents.getText());
             r.setAuthor(author.getText());
+            r.setCategory(category.getText());
 
 
 
@@ -242,7 +243,7 @@ public class UpdateBAForm extends BaseForm {
             gui_Label_1.setName("Label_1");
             gui_Label_1.setIcon(resourceObjectInstance.getImage("profile_image.png"));
             gui_Component_Group_1.setName("Component_Group_1");
-            gui_Button_2.setText("Add Article");
+            gui_Button_2.setText("Update Article");
             gui_Button_2.setName("Button_2");
             gui_Button_3.setText("Forgot Your Password");
             gui_Button_3.setUIID("CenterLabelSmall");
