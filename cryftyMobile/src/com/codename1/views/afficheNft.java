@@ -18,6 +18,7 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.uikit.pheonixui.BaseForm;
 import com.codename1.uikit.pheonixui.InboxForm;
@@ -172,7 +173,7 @@ public class afficheNft extends BaseForm {
             Container ownerCommentContainer = new Container(new BorderLayout());
             Container commentContainer = new Container(new BorderLayout());
             Container reactionContainer = new Container(new BorderLayout());
-            Container buttonsCmtContainer = new Container(new BorderLayout());
+            Container buttonsCmtContainer = new Container(new BoxLayout(BoxLayout.X_AXIS));
 
 
             Label lblUser = new Label(comment.getUser().substring(18,comment.getUser().length()-1));
@@ -180,9 +181,14 @@ public class afficheNft extends BaseForm {
             Label lblComment = new Label(comment.getComment());
             Label lblLikes = new Label(comment.getLikes()+"");
             Label lblDislikes = new Label(comment.getDislikes()+ "");
-            Button deleteComment = new Button("delete");
-            Button updateComment = new Button("Update");
+            Button deleteComment = new Button();
+            Button updateComment = new Button();
 
+            deleteComment.setUIID("NewsTopLine");
+            deleteComment.setIcon(deleteIcon);
+
+            updateComment.setUIID("NewsTopLine");
+            updateComment.setIcon(updateIcon);
 
             add(ownerCommentContainer);
             ownerCommentContainer.addComponent(BorderLayout.WEST, lblUser);
@@ -200,8 +206,8 @@ public class afficheNft extends BaseForm {
 
             if(comment.getUser().substring(4,5).equals(client.getId()+"")){
                 add(buttonsCmtContainer);
-                buttonsCmtContainer.addComponent(BorderLayout.EAST,updateComment);
-                buttonsCmtContainer.addComponent(BorderLayout.WEST,deleteComment);
+                buttonsCmtContainer.addComponent(updateComment);
+                buttonsCmtContainer.addComponent(deleteComment);
             }
 
         }
