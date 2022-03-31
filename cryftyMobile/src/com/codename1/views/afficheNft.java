@@ -23,6 +23,8 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.uikit.pheonixui.BaseForm;
 import com.codename1.uikit.pheonixui.InboxForm;
+import com.codename1.uikit.pheonixui.Transaction.AjouterPanier;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -34,6 +36,7 @@ public class afficheNft extends BaseForm {
     EncodedImage enc;
     Image imgs;
     ImageViewer imgv;
+    Form current = this;
 
     public afficheNft(Form previous, int id) {
         ArrayList<Nft> nfts = Connection.getInstance().afficheOneNft(id);
@@ -236,6 +239,22 @@ public class afficheNft extends BaseForm {
                 cr.setDisposeOnCompletion(dlg);
             }
         });
+        Button btnPanier = new Button("+ Add to Cart");
+        //btnPanier.setUIID("CenterButton");
+        btnPanier.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (cart.getNftProd().contains(nft)) {
+                    Dialog.show("Error","NFT déja existe ",new Command("OK"));
+                    new Explore(current).show();
+                }
+                else {
+                    cart.getNftProd().add(nft);
+                    new AjouterPanier(current, cart).show();
+                }
+            }
+        });
+        add(btnPanier);
         getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
     }
 }

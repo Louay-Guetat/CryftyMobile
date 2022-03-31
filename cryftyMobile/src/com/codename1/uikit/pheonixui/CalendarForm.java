@@ -18,6 +18,7 @@
  */
 package com.codename1.uikit.pheonixui;
 
+import com.codename1.io.*;
 import com.codename1.l10n.SimpleDateFormat;
 import com.codename1.ui.Button;
 import com.codename1.ui.Component;
@@ -32,7 +33,15 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.spinner.Picker;
 import com.codename1.ui.util.Resources;
-import java.util.Date;
+import com.codename1.uikit.pheonixui.model.Transfer;
+import com.codename1.uikit.pheonixui.model.Wallet;
+import com.codename1.uikit.pheonixui.utils.Statics;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * GUI builder created Form
@@ -40,7 +49,7 @@ import java.util.Date;
  * @author shai
  */
 public class CalendarForm extends BaseForm {
-
+    private ArrayList<Transfer> transfers = new ArrayList<Transfer>();
     public CalendarForm() {
         this(com.codename1.ui.util.Resources.getGlobalResources());
     }
@@ -80,11 +89,66 @@ public class CalendarForm extends BaseForm {
         Component combos = bl.getNorth();
         gui_Calendar_1.replace(combos, cnt, null);
         
-        
-        add(createEntry(resourceObjectInstance, false, "10:15", "11:45", "3B, 2nd Floor", "Design Review", "Bryant Ford, Ami Koehler", "contact-a.png", "contact-b.png", "contact-c.png"));
-        add(createEntry(resourceObjectInstance, true, "12:20", "13:20", "Taco Bell", "Lunch", "Detra Mcmunn, Ami Koehler", "contact-b.png", "contact-c.png"));
-        add(createEntry(resourceObjectInstance, false, "16:15", "17:10", "3B, 2nd Floor", "Design Meeting", "Bryant Ford, Ami Koehler, Detra Mcmunn", "contact-a.png"));
+        getWallets();
+        for (Transfer transfer:transfers) {
+            DateTimeFormatter formatEntree = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ssXXX");
+            DateTimeFormatter formatSortie = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            System.out.println(transfer.getDate());
+            LocalDate date = LocalDate.parse(transfer.getDate(), formatEntree);
+            String nouvelleDate = formatSortie.format(date);
+            System.out.println(nouvelleDate); // Affiche 15/01/2021
+            add(createEntry(resourceObjectInstance, false, nouvelleDate, null, "Sent", transfer.getAmount(), null));
+        }
+     }
+
+
+
+
+    public ArrayList<Transfer> getWallets(){
+        System.out.println("In Get Wallets Method");
+
+        String id = "50";
+        System.out.println("Got Id");
+        ConnectionRequest request = new ConnectionRequest();
+        String url = Statics.BASE_URL+"/api/wallet/transfers/all/"+id;
+        request.setUrl(url);
+        request.setPost(false);
+        System.out.println("Configured request : "+request.getRequestBody());
+
+        request.addResponseListener((evt -> {
+            try {
+                System.out.println("GetWallets::ResponseListener");
+                transfers = parseWallet(new String(request.getResponseData()),id);
+            } catch (IOException | IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        }));
+        NetworkManager.getInstance().addToQueueAndWait(request);
+        return transfers;
     }
+
+    private ArrayList<Transfer> parseWallet(String jsonText, String id) throws IOException, NoSuchFieldException, IllegalAccessException {
+        System.out.println("In Parse Wallet Method");
+        transfers = new ArrayList<>();
+        JSONParser j = new JSONParser();
+        Map<String,Object> walletListJson = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
+        List<Map<String,Object>> list = (List<Map<String, Object>>) walletListJson.get("root");
+        for (Map<String,Object> obj : list){
+
+
+            String amount = obj.get("amount").toString();
+            String date = obj.get("transferDate").toString();
+
+            Transfer transfer = new Transfer();
+            transfer.setAmount(amount);
+            transfer.setDate(date);
+            transfers.add(transfer);
+        }
+
+
+        return transfers;
+    }
+
 
     private Container createEntry(Resources res, boolean selected, String startTime, String endTime, String location, String title, String attendance, String... images) {
         Component time = new Label(startTime, "CalendarHourUnselected");
@@ -113,10 +177,10 @@ public class CalendarForm extends BaseForm {
         );
         
         Label redLabel = new Label("", "RedLabelRight");
-        FontImage.setMaterialIcon(redLabel, FontImage.MATERIAL_LOCATION_ON);
+        FontImage.setMaterialIcon(redLabel, FontImage.MATERIAL_ARROW_CIRCLE_UP);
         Container loc = BoxLayout.encloseY(
                 redLabel,
-                new Label("Location:", "TinyThinLabelRight"),
+                new Label("Sent:", "TinyThinLabelRight"),
                 new Label(location, "TinyBoldLabel")
         );
         

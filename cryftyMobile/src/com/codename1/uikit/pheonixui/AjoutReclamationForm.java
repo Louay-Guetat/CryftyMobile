@@ -19,13 +19,13 @@ public class AjoutReclamationForm extends  BaseForm {
 
         super("Newsfeed",BoxLayout.y()); //herigate men Newsfeed w l formulaire vertical
 
-        Toolbar tb = new Toolbar(true);
+        Toolbar tb = getToolbar();
         current = this ;
         setToolbar(tb);
         getTitleArea().setUIID("Container");
         setTitle("Ajout Reclamation");
         getContentPane().setScrollVisible(false);
-
+        installSidemenu(res);
        // super.addSideMenu(res);
         tb.addSearchCommand(e ->  {
 
@@ -158,11 +158,12 @@ public class AjoutReclamationForm extends  BaseForm {
                     final Dialog iDialog = ip.showInfiniteBlocking();
 
                     //njibo iduser men session (current user)
-                    Reclamation r = new Reclamation(String.valueOf(name.getText()
-                    ).toString(),
+                    Reclamation r = new Reclamation(
                             String.valueOf(email.getText()).toString(),
+                            String.valueOf(subject.getText()).toString(),
                             String.valueOf(message.getText()).toString(),
-                            String.valueOf(subject.getText()).toString(), SessionManager.getId()
+                            String.valueOf(name.getText()).toString(),
+                            SessionManager.getId()
 
                     );
 

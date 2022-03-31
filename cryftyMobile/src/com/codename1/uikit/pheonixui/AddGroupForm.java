@@ -43,7 +43,7 @@ public class AddGroupForm extends BaseForm {
         fab.bindFabToContainer(getContentPane());
         fab.addActionListener(e -> new ConversationForm(resourceObjectInstance).show());*/
     }
-    private com.codename1.ui.Container gui_Container_1 = new com.codename1.ui.Container(new com.codename1.ui.layouts.BorderLayout());
+    private Container gui_Container_1 = new Container(new BorderLayout());
 
 
     private void initGuiBuilderComponents(com.codename1.ui.util.Resources resourceObjectInstance) {
@@ -108,7 +108,7 @@ public class AddGroupForm extends BaseForm {
 
             }
         });
-      gui_Container_1.addComponent(com.codename1.ui.layouts.BorderLayout.CENTER,AddGroupList);
+      gui_Container_1.addComponent(BorderLayout.CENTER,AddGroupList);
 
     }
 }

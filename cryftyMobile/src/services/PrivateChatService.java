@@ -109,7 +109,7 @@ public class PrivateChatService {
     }
 
     public ArrayList<PrivateChat> listPrivateChat(int idOtherUser) {
-        String url = Statics.BASE_URL + "private/"+idOtherUser+"?CurrentUser=1";
+        String url = Statics.BASE_URL + "private/"+idOtherUser+"?CurrentUser="+ Preferences.get("id","1");
         System.out.println("===>" + url);
         req.setUrl(url);
        req.setPost(true);
@@ -127,7 +127,7 @@ public class PrivateChatService {
     public ArrayList<PrivateChat> AddPrivateChat( int idOtherUser) {
 
         System.out.println("********");
-        String url = Statics.BASE_URL + "Addprivate/"+idOtherUser+"?CurrentUser=1";
+        String url = Statics.BASE_URL + "Addprivate/"+idOtherUser+"?CurrentUser="+ Preferences.get("id","1");
         System.out.println("===>" + url);
         req.setUrl(url);
         req.setPost(true);

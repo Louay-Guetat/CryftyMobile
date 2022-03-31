@@ -18,16 +18,12 @@ import java.util.ArrayList;
 
 public class WalletsForm extends BaseForm {
 
+    private ArrayList<Wallet> wallets = new ArrayList<>();
+    private final com.codename1.ui.Container gui_Container_1 = new com.codename1.ui.Container(new com.codename1.ui.layouts.BorderLayout());
+
     public WalletsForm() {
         this(com.codename1.ui.util.Resources.getGlobalResources());
     }
-
-    @Override
-    protected boolean isCurrentWallets() {
-        return true;
-    }
-
-    private ArrayList<Wallet> wallets = new ArrayList<>();
 
     public WalletsForm(Resources resourceObjectInstance) {
         System.out.println("OnLoad");
@@ -36,6 +32,7 @@ public class WalletsForm extends BaseForm {
 
 
         getToolbar().addCommandToRightBar("", resourceObjectInstance.getImage("toolbar-profile-pic.png"), e -> {
+            new ProfileForm(resourceObjectInstance).show();
         });
 
         System.out.println("Befoore List Generation");
@@ -43,10 +40,10 @@ public class WalletsForm extends BaseForm {
         Container walletList = new InfiniteContainer() {
             @Override
             public Component[] fetchComponents(int index, int amount) {
-                if(index == 0)
+                if (index == 0)
                     wallets = WalletService.getInstance().getWallets();
 
-                if(index + amount > wallets.size()){
+                if (index + amount > wallets.size()) {
                     amount = wallets.size() - index;
                     System.out.println("hello salem");
                     if (amount <= 0) {
@@ -55,18 +52,19 @@ public class WalletsForm extends BaseForm {
                     }
                 }
                 Component[] more = new Component[amount];
-                for(int iter = 0; iter < amount; iter++){
+                for (int iter = 0; iter < amount; iter++) {
+
                     int offset = index + iter;
                     MultiButton mb = new MultiButton(wallets.get(offset).getWalletLabel());
                     mb.setTextLine2("Click for further Details");
-                    mb.setTextLine3("Balance : "+wallets.get(offset).getBalance() + " " + wallets.get(offset).getCode());
+                    mb.setTextLine3("Balance : " + wallets.get(offset).getBalance() + " " + wallets.get(offset).getCode());
                     System.out.println("repeat");
 
                     mb.setNameLine1("Label_3");
                     mb.setUIIDLine2("RedLabel");
                     mb.setUIIDLine3("SmallFontLabel");
                     mb.setIcon(resourceObjectInstance.getImage("label_round.png"));
-                    mb.addActionListener(e ->{
+                    mb.addActionListener(e -> {
                         new WalletInfoForm(wallets.get(offset)).show();
                     });
                     more[iter] = mb;
@@ -77,9 +75,9 @@ public class WalletsForm extends BaseForm {
         };
         System.out.println("After List Generation");
 
-        gui_Container_1.addComponent(com.codename1.ui.layouts.BorderLayout.CENTER,walletList);
-        FloatingActionButton fab  = FloatingActionButton.createFAB(FontImage.MATERIAL_ADD);
-        RoundBorder rb = (RoundBorder)fab.getUnselectedStyle().getBorder();
+        gui_Container_1.addComponent(com.codename1.ui.layouts.BorderLayout.CENTER, walletList);
+        FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_ADD);
+        RoundBorder rb = (RoundBorder) fab.getUnselectedStyle().getBorder();
         rb.uiid(true);
         fab.bindFabToContainer(getContentPane());
         fab.addActionListener(e -> {
@@ -106,7 +104,6 @@ public class WalletsForm extends BaseForm {
             c1s.setMarginBottom(16);
             c1s.setMarginLeft(12);
             c1s.setMarginRight(3);
-
 
 
             popup.add(trans).
@@ -137,15 +134,16 @@ public class WalletsForm extends BaseForm {
                 )
         );
     }
-    private com.codename1.ui.Container gui_Container_1 = new com.codename1.ui.Container(new com.codename1.ui.layouts.BorderLayout());
+
+    @Override
+    protected boolean isCurrentWallets() {
+        return true;
+    }
 
     private void initGuiBuilderComponents(com.codename1.ui.util.Resources resourceObjectInstance) {
-
         setLayout(new com.codename1.ui.layouts.BoxLayout(com.codename1.ui.layouts.BoxLayout.Y_AXIS));
-
         setTitle("InboxForm");
         setName("InboxForm");
         addComponent(gui_Container_1);
-
     }
 }

@@ -7,15 +7,19 @@ import com.codename1.uikit.pheonixui.model.Wallet;
 import com.codename1.uikit.pheonixui.service.WalletService;
 
 public class UpdateWalletInfo extends BaseForm {
+    private final Wallet updatedWallet;
+    //-- DON'T EDIT BELOW THIS LINE!!!
+    private final com.codename1.ui.Container gui_Container_1 = new com.codename1.ui.Container(new com.codename1.ui.layouts.BoxLayout(com.codename1.ui.layouts.BoxLayout.Y_AXIS));
+    private final com.codename1.ui.ComponentGroup gui_Component_Group_1 = new com.codename1.ui.ComponentGroup();
+    private final com.codename1.ui.TextField gui_Text_Field_1 = new com.codename1.ui.TextField();
+    private final com.codename1.ui.TextField gui_Text_Field_2 = new com.codename1.ui.TextField();
+    private final Label gui_label_1 = new Label();
+    private final Label gui_label_2 = new Label();
+    private final com.codename1.ui.Button gui_Button_2 = new com.codename1.ui.Button();
     public UpdateWalletInfo(Wallet wallet) {
-        this(com.codename1.ui.util.Resources.getGlobalResources(),wallet);
+        this(com.codename1.ui.util.Resources.getGlobalResources(), wallet);
     }
-    @Override
-    protected boolean isCurrentWallets() {
-        return true;
-    }
-    private  Wallet updatedWallet;
-    public UpdateWalletInfo(com.codename1.ui.util.Resources resourceObjectInstance,Wallet wallet) {
+    public UpdateWalletInfo(com.codename1.ui.util.Resources resourceObjectInstance, Wallet wallet) {
         updatedWallet = wallet;
         initGuiBuilderComponents(resourceObjectInstance);
         getTitleArea().setUIID("Container");
@@ -28,26 +32,21 @@ public class UpdateWalletInfo extends BaseForm {
         gui_Button_2.addActionListener(evt -> {
             updatedWallet.setId(gui_Text_Field_2.getText());
             updatedWallet.setWalletLabel(gui_Text_Field_1.getText());
-            if(WalletService.getInstance().updateWallet(updatedWallet))
-                Dialog.show("Success","Wallet Updated","OK",null);
+            if (WalletService.getInstance().updateWallet(updatedWallet))
+                Dialog.show("Success", "Wallet Updated", "OK", null);
         });
 
         getToolbar().addCommandToLeftBar("", mat, e -> new WalletInfoForm(updatedWallet).showBack());
 
 
     }
-    
-//-- DON'T EDIT BELOW THIS LINE!!!
-private com.codename1.ui.Container gui_Container_1 = new com.codename1.ui.Container(new com.codename1.ui.layouts.BoxLayout(com.codename1.ui.layouts.BoxLayout.Y_AXIS));
-    private com.codename1.ui.ComponentGroup gui_Component_Group_1 = new com.codename1.ui.ComponentGroup();
-    private com.codename1.ui.TextField gui_Text_Field_1 = new com.codename1.ui.TextField();
-    private com.codename1.ui.TextField gui_Text_Field_2 = new com.codename1.ui.TextField();
-    private Label gui_label_1 = new Label();
-    private Label gui_label_2 = new Label();
-    private com.codename1.ui.Button gui_Button_2 = new com.codename1.ui.Button();
 
+    @Override
+    protected boolean isCurrentWallets() {
+        return true;
+    }
 
-// <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initGuiBuilderComponents(com.codename1.ui.util.Resources resourceObjectInstance) {
         setLayout(new com.codename1.ui.layouts.BorderLayout());
         setTitle("Update Wallet");
@@ -74,7 +73,6 @@ private com.codename1.ui.Container gui_Container_1 = new com.codename1.ui.Contai
 
         gui_label_2.setUIID("label");
         gui_label_2.setText("Your id");
-
 
 
         gui_Container_1.addComponent(gui_Button_2);

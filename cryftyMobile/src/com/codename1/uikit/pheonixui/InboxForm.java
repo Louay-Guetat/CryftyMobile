@@ -24,6 +24,7 @@ import Entities.PrivateChat;
 import Entities.User;
 import com.codename1.components.FloatingActionButton;
 import com.codename1.components.MultiButton;
+import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionListener;
@@ -58,6 +59,7 @@ public class InboxForm extends BaseForm {
     }
 
     public InboxForm(com.codename1.ui.util.Resources resourceObjectInstance) {
+
         initGuiBuilderComponents(resourceObjectInstance);
 
         getToolbar().setTitleComponent(
@@ -84,18 +86,18 @@ public class InboxForm extends BaseForm {
 
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
-    private com.codename1.ui.Container gui_Container_1 = new com.codename1.ui.Container(new com.codename1.ui.layouts.BorderLayout());
-    private com.codename1.ui.Container gui_Container_2 = new com.codename1.ui.Container(new com.codename1.ui.layouts.FlowLayout());
+    private Container gui_Container_1 = new Container(new com.codename1.ui.layouts.BorderLayout());
+    private Container gui_Container_2 = new Container(new FlowLayout());
     private void initGuiBuilderComponents(com.codename1.ui.util.Resources resourceObjectInstance) {
 
-        setLayout(new com.codename1.ui.layouts.BoxLayout(com.codename1.ui.layouts.BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(BoxLayout.Y_AXIS));
         setTitle("InboxForm");
         setName("InboxForm");
         addComponent(gui_Container_1);
 
         Container GroupsList = new Container(BoxLayout.y());
         // Container PrivateChatList = new Container(BoxLayout.y());
-        for (GroupChat c : GroupeService.getInstance().ListGroups(2))
+        for (GroupChat c : GroupeService.getInstance().ListGroups(Integer.parseInt(Preferences.get("id","1"))))
         {
             MultiButton mb = new MultiButton(c.getNom());
             mb.addPointerPressedListener(e -> new ConversationForm(c).show());
@@ -124,7 +126,7 @@ public class InboxForm extends BaseForm {
                 }}
             );
             GroupsList.add(mb);
-            if(c.getOwner().substring(4,7).contains("2")){
+            if(c.getOwner().substring(4,7).contains(Preferences.get("id","1")+"")){
                /* gui_Container_2.getAllStyles().setMarginTop(20);
                gui_Container_2.setName("Container_2");
                 gui_Container_2.addComponent(lsupp);

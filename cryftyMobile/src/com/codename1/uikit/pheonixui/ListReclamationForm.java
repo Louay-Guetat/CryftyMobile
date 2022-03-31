@@ -26,7 +26,7 @@ public class ListReclamationForm extends BaseForm {
         getTitleArea().setUIID("Container");
         setTitle("Ajout Reclamation");
         getContentPane().setScrollVisible(false);
-
+        installSidemenu(res);
         tb.addSearchCommand(e ->  {
 
         });
@@ -104,9 +104,8 @@ public class ListReclamationForm extends BaseForm {
         mesListes.addActionListener((e) -> {
             InfiniteProgress ip = new InfiniteProgress();
             final Dialog ipDlg = ip.showInifiniteBlocking();
-
-            //  ListReclamationForm a = new ListReclamationForm(res);
-            //  a.show();
+              ListReclamationForm a = new ListReclamationForm(res);
+              a.show();
             refreshTheme();
         });
 

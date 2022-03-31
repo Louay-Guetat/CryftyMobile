@@ -1,11 +1,7 @@
 package services;
 import Entities.GroupChat;
 import Entities.User;
-import com.codename1.io.CharArrayReader;
-import com.codename1.io.ConnectionRequest;
-import com.codename1.io.JSONParser;
-import com.codename1.io.NetworkEvent;
-import com.codename1.io.NetworkManager;
+import com.codename1.io.*;
 import com.codename1.ui.events.ActionListener;
 import utils.Statics;
 import java.io.IOException;
@@ -52,8 +48,9 @@ public class GroupeService {
             }
 
         }
+       String  idOwner = Preferences.get("id","1");
        // participant=t.getParticipants();
-        String url = Statics.BASE_URL + "AddGroup?nom="+ t.getNom()+"&participant=%5B"+ participant+"%5D&owner=2";
+        String url = Statics.BASE_URL + "AddGroup?nom="+ t.getNom()+"&participant=%5B"+ participant+"%5D&owner="+idOwner;
         System.out.println("===>" + url);
         req.setUrl(url);
         req.setPost(true);
@@ -74,6 +71,7 @@ public class GroupeService {
         System.out.println(t);
         System.out.println("********");
        String participants="";
+
        System.out.println(participants);
 
         System.out.println(t.getParticipants());
@@ -189,7 +187,8 @@ public class GroupeService {
     }
 
     public ArrayList<User> Listusers() {
-        String url = Statics.BASE_URL + "afficheUsers/2";
+
+        String url = Statics.BASE_URL + "afficheUsers/"+Preferences.get("id","1");;
         System.out.println("===>" + url);
         req.setUrl(url);
        // req.setPost(false);

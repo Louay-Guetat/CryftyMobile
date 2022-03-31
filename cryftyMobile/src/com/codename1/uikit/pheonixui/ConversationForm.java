@@ -6,6 +6,7 @@ import com.codename1.components.MultiButton;
 
 
 import com.codename1.components.SpanLabel;
+import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionEvent;
@@ -84,7 +85,7 @@ Form current;
             addComponent(MessagesList);
             MessagesList.getAllStyles().setBgColor(0xeeeeee);
             MessagesList.setName("Container_1");
-            if (message.getSender().substring(4, 7).contains("2")) {
+            if (message.getSender().substring(4, 7).contains(Preferences.get("id","1"))) {
                 MessagesList.addComponent(BorderLayout.EAST, gui_Multi_Button_1);
                 MessagesList.addComponent(BorderLayout.SOUTH, lsupp);
             } else {
@@ -137,7 +138,7 @@ Form current;
                     )
             );
             System.out.println(((GroupChat) c).getOwner().substring(4,7));
-            if (((GroupChat) c).getOwner().substring(4,7).contains("2")) {
+            if (((GroupChat) c).getOwner().substring(4,7).contains(Preferences.get("id","1"))) {
                 System.out.println(((GroupChat) c).getOwner());
                 getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_EDIT, e -> {
 
@@ -159,7 +160,7 @@ Form current;
                 String idSender = p.getSender().substring(4, 7);
                 System.out.println(idReceived);
                 System.out.println(idSender);
-                if (idReceived.contains("2")) {
+                if (idReceived.contains(Preferences.get("id","1"))) {
                     getToolbar().setTitleComponent(
                             FlowLayout.encloseCenterMiddle(
                                     new Label(p.getSender().substring(18, p.getSender().length() - 1) + "", "Title")

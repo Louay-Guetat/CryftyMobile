@@ -17,6 +17,7 @@ import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.plaf.Style;
 import com.codename1.uikit.pheonixui.BaseForm;
 import com.codename1.uikit.pheonixui.InboxForm;
+import com.codename1.uikit.pheonixui.WalletsForm;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -199,7 +200,7 @@ public class Explore extends BaseForm {
             gui_LA2.setName("likes");
             gui_LA2.setUIID("NewsTopLine");
             Style likeStyle= new Style(gui_LA2.getUnselectedStyle());
-            FontImage like = FontImage.createMaterial(FontImage.MATERIAL_SEND,likeStyle);
+            FontImage like = FontImage.createMaterial(FontImage.MATERIAL_STAR_RATE,likeStyle);
             gui_LA2.setIcon(like);
             gui_LA2.setPropertyValue("line1", nft.getLikes()+"");
             gui_LA2.setPropertyValue("uiid1", "SlightlySmallerFontLabel");
@@ -325,7 +326,7 @@ public class Explore extends BaseForm {
         clear.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                new Explore(new InboxForm()).show();
+                new Explore(new WalletsForm()).show();
             }
         });
 

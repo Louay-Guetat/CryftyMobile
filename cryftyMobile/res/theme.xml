@@ -644,6 +644,7 @@
         <val key="transparency" value="0" />
     </theme>
     <image name="toolbar-profile-pic.png" type="multi"  />
+    <image name="wallet.png"  />
     <image name="walthru-radio-selected.png" type="multi"  />
     <image name="walthru-radio-unselected.png" type="multi"  />
     <image name="welcome-background.jpg"  />

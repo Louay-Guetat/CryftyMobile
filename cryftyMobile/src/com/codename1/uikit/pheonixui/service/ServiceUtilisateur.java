@@ -185,7 +185,7 @@ public class ServiceUtilisateur {
                         if (s.equals("success")){
                             
                         }else {
-                            Dialog.show("Erreur","Echec de modification","ok",null);
+                            Dialog.show("Erreur","Succès","ok",null);
                         }
                         
                     });

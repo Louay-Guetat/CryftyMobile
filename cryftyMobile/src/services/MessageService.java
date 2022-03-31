@@ -141,7 +141,7 @@ return true;
     public boolean SendMessage(Message msg,int idConv) {
         System.out.println(msg);
         System.out.println("********");
-        String url = Statics.BASE_URL + "sendmsg/"+idConv+"/2?contenu="+msg.getContenu();
+        String url = Statics.BASE_URL + "sendmsg/"+idConv+"/"+Preferences.get("id","1")+"?contenu="+msg.getContenu();
         System.out.println("===>" + url);
         req.setUrl(url);
         req.setPost(true);

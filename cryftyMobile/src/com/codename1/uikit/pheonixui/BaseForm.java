@@ -22,11 +22,9 @@ package com.codename1.uikit.pheonixui;
 import com.codename1.Services.Connection;
 import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ScaleImageLabel;
-import com.codename1.entities.Category;
-import com.codename1.entities.Client;
-import com.codename1.entities.Node;
-import com.codename1.entities.SubCategory;
+import com.codename1.entities.*;
 import com.codename1.io.MultipartRequest;
+import com.codename1.io.Preferences;
 import com.codename1.io.Storage;
 import com.codename1.ui.*;
 import com.codename1.ui.layouts.FlowLayout;
@@ -34,6 +32,8 @@ import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.layouts.Layout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
+import com.codename1.uikit.pheonixui.Transaction.AfficheTransaction;
+import com.codename1.uikit.pheonixui.Transaction.AjouterPanier;
 import com.codename1.uikit.pheonixui.service.SessionManager;
 import com.codename1.views.AddNft;
 import com.codename1.views.Explore;
@@ -52,6 +52,10 @@ public class BaseForm extends Form {
     public static ArrayList<Node> allCurrencies = Connection.getInstance().getAllCurrencies();
     public static Client client = new Client(1,"Louay","Guetat","louay.guetat@esprit.tn",
             55160398,23,"278, rue bab saadoune");
+    public static ArrayList<Nft> nfts=new ArrayList<>();
+    public static int id= Integer.parseInt(Preferences.get("id", "1"));
+    public static Cart cart=new Cart(nfts);
+    public float total;
     private Form current = this;
 
     public void installSidemenu(Resources res) {
@@ -92,21 +96,22 @@ public class BaseForm extends Form {
         });
 
         getToolbar().addCommandToSideMenu("Add NFT", trendingImage, e -> new AddNft(current).show());
-        getToolbar().addCommandToSideMenu("Reclamations", walletsImage, e -> new ListReclamationForm(res).show());
-        getToolbar().addCommandToSideMenu("Profil", walletsImage, e -> new ProfileForm(res).show());
-        getToolbar().addCommandToSideMenu("ADD Reclamation", walletsImage, e -> new AjoutReclamationForm(res).show());
+        getToolbar().addCommandToSideMenu("Reclamations", null, e -> new ListReclamationForm(res).show());
+        getToolbar().addCommandToSideMenu("Profil", null, e -> new ProfileForm(res).show());
+        getToolbar().addCommandToSideMenu("ADD Reclamation", null, e -> new AjoutReclamationForm(res).show());
         getToolbar().addCommandToSideMenu("Stats", statsImage, e -> new StatsForm(res).show());
         getToolbar().addCommandToSideMenu("Calendar", calendarImage, e -> new CalendarForm(res).show());
-        getToolbar().addCommandToSideMenu("Map", null, e -> {});
+        getToolbar().addCommandToSideMenu("Panier", null, e -> new AjouterPanier(current,cart).show());
+        getToolbar().addCommandToSideMenu("Transactions", null, e -> new AfficheTransaction(current,total).show());
         getToolbar().addCommandToSideMenu("Wallets", walletsImage, e -> new WalletsForm().show());
         getToolbar().addCommandToSideMenu("Articles", trendingImage, e -> new TrendingForm(res).show());
         getToolbar().addCommandToSideMenu("blogs BO", trendingImage, e -> new BOblogsForm(res).show());
 
         // spacer
         getToolbar().addComponentToSideMenu(new Label(" ", "SideCommand"));
-        getToolbar().addComponentToSideMenu(new Label(res.getImage("profile_image.png"), "Container"));
-        getToolbar().addComponentToSideMenu(new Label("Detra Mcmunn", "SideCommandNoPad"));
-        getToolbar().addComponentToSideMenu(new Label("Long Beach, CA", "SideCommandSmall"));
+        getToolbar().addComponentToSideMenu(new Label(Preferences.get("username", "SideCommandNoPad")));
+        getToolbar().addComponentToSideMenu(new Label(Preferences.get("email", "Email"), "SideCommandSmall"));
+        getToolbar().addCommandToSideMenu("Log Out", null, e -> new SplashForm().show());
     }
 
 

@@ -34,7 +34,7 @@ public class ProfileForm extends BaseForm {
         menuButton.setUIID("Title");
         FontImage.setMaterialIcon(menuButton, FontImage.MATERIAL_MENU);
         menuButton.addActionListener(e -> getToolbar().openSideMenu());
-
+        installSidemenu(res);
 
 
 

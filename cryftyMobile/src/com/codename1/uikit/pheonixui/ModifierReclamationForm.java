@@ -15,15 +15,15 @@ public class ModifierReclamationForm extends BaseForm {
 
 
 
-        Toolbar tb = new Toolbar(true);
+
         current = this ;
-        setToolbar(tb);
+ 
         getTitleArea().setUIID("Container");
         setTitle("Ajout Reclamation");
         getContentPane().setScrollVisible(false);
 
 
-        super.addSideMenu(res);
+        installSidemenu(res);
 
         TextField name = new TextField(r.getName() , "Name" , 20 , TextField.ANY);
         TextField email = new TextField(r.getEmail() , "Email" , 20 , TextField.ANY);

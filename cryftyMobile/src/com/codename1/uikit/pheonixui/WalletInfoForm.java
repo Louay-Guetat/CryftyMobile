@@ -1,7 +1,6 @@
 package com.codename1.uikit.pheonixui;
 
 import com.codename1.components.ImageViewer;
-import com.codename1.io.Storage;
 import com.codename1.ui.*;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.uikit.pheonixui.model.Wallet;
@@ -17,29 +16,29 @@ public class WalletInfoForm extends BaseForm {
     ImageViewer imgv;
 
     public WalletInfoForm(Wallet wallet) {
-        this(com.codename1.ui.util.Resources.getGlobalResources(),wallet);
+        this(com.codename1.ui.util.Resources.getGlobalResources(), wallet);
 
     }
 
-    public WalletInfoForm(com.codename1.ui.util.Resources resourceObjectInstance,Wallet wallet) {
+    public WalletInfoForm(com.codename1.ui.util.Resources resourceObjectInstance, Wallet wallet) {
         initGuiBuilderComponents(resourceObjectInstance);
         FontImage mat = FontImage.createMaterial(FontImage.MATERIAL_CLOSE, "SigninTitle", 3.5f);
         getToolbar().addCommandToLeftBar("", mat, e -> new WalletsForm().showBack());
 
 
-        String url = Statics.IMG_URL+"/uploads/walletImages/"+wallet.getImgPath();
+        String url = Statics.IMG_URL + "/uploads/walletImages/" + wallet.getImgPath();
 
         //getting image
         try {
             enc = EncodedImage.create("/load.png");
             System.out.println("before");
-            imgs = URLImage.createToStorage(enc,url,url,URLImage.RESIZE_SCALE);
+            imgs = URLImage.createToStorage(enc, url, url, URLImage.RESIZE_SCALE);
 
-            System.out.println("after"+ imgs.getImageName());
+            System.out.println("after" + imgs.getImageName());
             imgv = new ImageViewer();
             imgv.setImage(imgs);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             try {
                 imgv = new ImageViewer(Image.createImage("/load.png"));
                 System.out.println("loading Catch 1 ");
@@ -50,7 +49,7 @@ public class WalletInfoForm extends BaseForm {
         }
 
         //gui elements
-        Label label = new Label(wallet.getWalletLabel(),"Label_3_1");
+        Label label = new Label(wallet.getWalletLabel(), "Label_3_1");
         Button button = new Button("Upload New Image");
         Button buttonUpdate = new Button("Update Wallet");
         Button buttonDelete = new Button("Delete Wallet");
@@ -71,14 +70,14 @@ public class WalletInfoForm extends BaseForm {
             new UpdateWalletInfo(wallet).show();
         });
         buttonDelete.addActionListener(evt -> {
-           boolean bool = WalletService.getInstance().deleteWallet(Integer.parseInt(wallet.getId()));
-           if (bool){
-               Dialog.show("Success","Wallet has been deleted , redirecting back the the list","OK",null);
-           }
+            boolean bool = WalletService.getInstance().deleteWallet(Integer.parseInt(wallet.getId()));
+            if (bool) {
+                Dialog.show("Success", "Wallet has been deleted , redirecting back the the list", "OK", null);
+            }
 
         });
         //end_buttons
-        addComponent(new Container(BoxLayout.yCenter()).addAll(imgv,label,address,balance,button,buttonUpdate,buttonDelete));
+        addComponent(new Container(BoxLayout.yCenter()).addAll(imgv, label, address, balance, button, buttonUpdate, buttonDelete));
 
 
     }
@@ -86,7 +85,7 @@ public class WalletInfoForm extends BaseForm {
 ////-- DON'T EDIT BELOW THIS LINE!!!
 
 
-// <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initGuiBuilderComponents(com.codename1.ui.util.Resources resourceObjectInstance) {
         setLayout(new com.codename1.ui.layouts.BoxLayout(com.codename1.ui.layouts.BoxLayout.Y_AXIS));
         setTitle("WalletInfoForm");

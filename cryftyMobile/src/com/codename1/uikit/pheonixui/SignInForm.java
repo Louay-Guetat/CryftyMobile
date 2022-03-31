@@ -78,7 +78,7 @@ public class SignInForm extends BaseForm {
                 FlowLayout.encloseCenter(doneHaveAnAccount, signUp),mp
         );
         content.setScrollableY(true);
-        add(BorderLayout.SOUTH, content);
+        add(BorderLayout.CENTER, content);
         signIn.requestFocus();
 
 

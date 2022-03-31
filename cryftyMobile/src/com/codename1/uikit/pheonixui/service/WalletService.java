@@ -12,32 +12,32 @@ import java.util.List;
 import java.util.Map;
 
 public class WalletService {
+    private static WalletService instance;
     public ConnectionRequest request;
     public boolean resultOK;
     private ArrayList<Wallet> wallets = new ArrayList<>();
-    private static WalletService instance;
 
     private WalletService() {
         request = new ConnectionRequest();
     }
 
     public static WalletService getInstance() {
-     if (instance == null)
-         instance = new WalletService();
-     return instance;
+        if (instance == null)
+            instance = new WalletService();
+        return instance;
     }
 
-    public boolean addWallet(Wallet wallet){
+    public boolean addWallet(Wallet wallet) {
         ToastBar.Status status = ToastBar.getInstance().createStatus();
         status.setMessage("Adding your new wallet ...");
         status.setShowProgressIndicator(true);
         status.show();
-        String url = Statics.BASE_URL+"/api/wallet/add";
+        String url = Statics.BASE_URL + "/api/wallet/add";
         request = new ConnectionRequest();
         request.setUrl(url);
         request.setPost(false);
-        request.addArgument("label",wallet.getWalletLabel());
-        request.addArgument("client",wallet.getClient());
+        request.addArgument("label", wallet.getWalletLabel());
+        request.addArgument("client", wallet.getClient());
         System.out.println("error 0 here");
         System.out.println("error 0 here");
         System.out.println(request.getRequestBody());
@@ -55,22 +55,22 @@ public class WalletService {
         return resultOK;
     }
 
-    public ArrayList<Wallet> getWallets(){
+    public ArrayList<Wallet> getWallets() {
         System.out.println("In Get Wallets Method");
 
 
-        String id = Preferences.get("id","1");
+        String id = Preferences.get("id", "1");
         System.out.println("Got Id");
         request = new ConnectionRequest();
-        String url = Statics.BASE_URL+"/api/wallet/all/"+id;
+        String url = Statics.BASE_URL + "/api/wallet/all/" + id;
         request.setUrl(url);
         request.setPost(false);
-        System.out.println("Configured request : "+request.getRequestBody());
+        System.out.println("Configured request : " + request.getRequestBody());
 
         request.addResponseListener((evt -> {
             try {
                 System.out.println("GetWallets::ResponseListener");
-                wallets = parseWallet(new String(request.getResponseData()),id);
+                wallets = parseWallet(new String(request.getResponseData()), id);
             } catch (IOException | IllegalAccessException | NoSuchFieldException e) {
                 e.printStackTrace();
             }
@@ -83,9 +83,9 @@ public class WalletService {
         System.out.println("In Parse Wallet Method");
         wallets = new ArrayList<>();
         JSONParser j = new JSONParser();
-        Map<String,Object> walletListJson = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
-        List<Map<String,Object>> list = (List<Map<String, Object>>) walletListJson.get("root");
-        for (Map<String,Object> obj : list){
+        Map<String, Object> walletListJson = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
+        List<Map<String, Object>> list = (List<Map<String, Object>>) walletListJson.get("root");
+        for (Map<String, Object> obj : list) {
 
             float walletIdF = Float.parseFloat(obj.get("id").toString());
             String walletId = String.valueOf((int) walletIdF);
@@ -95,12 +95,11 @@ public class WalletService {
             boolean isMain = true;
             boolean isActive = true;
             String coinCode;
-            if(obj.get("nodeId") != null) {
+            if (obj.get("nodeId") != null) {
                 Map<String, Object> node = (Map<String, Object>) obj.get("nodeId");
-                 coinCode = node.get("coinCode").toString();
+                coinCode = node.get("coinCode").toString();
 
-            }
-            else {
+            } else {
                 coinCode = "Not Available";
             }
             Float balance = Float.parseFloat(obj.get("balance").toString());
@@ -122,12 +121,12 @@ public class WalletService {
         return wallets;
     }
 
-    public boolean deleteWallet(int id){
+    public boolean deleteWallet(int id) {
         ToastBar.Status status = ToastBar.getInstance().createStatus();
         status.setMessage("Deleting your wallet ...");
         status.setShowProgressIndicator(true);
         status.show();
-        String url = Statics.BASE_URL+"/api/wallet/delete/"+id;
+        String url = Statics.BASE_URL + "/api/wallet/delete/" + id;
         request = new ConnectionRequest();
         request.setUrl(url);
         request.setPost(false);
@@ -149,11 +148,11 @@ public class WalletService {
         status.setMessage("Updating Your Wallet ...");
         status.setShowProgressIndicator(true);
         status.show();
-        String url = Statics.BASE_URL+"/api/wallet/update/"+wallet.getId();
+        String url = Statics.BASE_URL + "/api/wallet/update/" + wallet.getId();
         request = new ConnectionRequest();
         request.setUrl(url);
         request.setPost(true);
-        request.addArgument("label",wallet.getWalletLabel());
+        request.addArgument("label", wallet.getWalletLabel());
         request.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
             public void actionPerformed(NetworkEvent evt) {
