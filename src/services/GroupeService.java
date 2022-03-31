@@ -34,6 +34,7 @@ public class GroupeService {
         return Instance;
     }
     String participant="";
+
     int max=0;
   //  String [] participants=new String[max];
 
@@ -58,6 +59,45 @@ public class GroupeService {
         req.setPost(true);
         req.addArgument("nom", t.getNom());
         req.addArgument("participant", participant);
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                resultOK = req.getResponseCode() == 200; //Code HTTP 200 OK
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return resultOK;
+    }
+
+    public boolean UpdateGroup(GroupChat t , int idGr) {
+        System.out.println(t);
+        System.out.println("********");
+       String participants="";
+       System.out.println(participants);
+
+        System.out.println(t.getParticipants());
+        for(int i =0;i<t.getParticipants().size();i++)
+        {
+
+            if (i==0)
+            {
+                participants+=t.getParticipants().get(i);
+                System.out.println("testif"+participants);
+            }else
+            {
+                participants=participants+","+t.getParticipants().get(i);
+                System.out.println("testelse"+participants);
+            }
+
+        }
+        // participant=t.getParticipants();
+        String url = Statics.BASE_URL + "UpdateGroup/"+idGr+"?nom="+ t.getNom()+"&participant=%5B"+ participants+"%5D";
+        System.out.println("===>" + url);
+        req.setUrl(url);
+        req.setPost(true);
+        req.addArgument("nom", t.getNom());
+        req.addArgument("participant", participants);
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
             public void actionPerformed(NetworkEvent evt) {
@@ -189,7 +229,7 @@ public class GroupeService {
                     = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
 
             List<Map<String, Object>> list = (List<Map<String, Object>>) ParticipantsListJson.get("root");
-            System.out.println(list);
+
             for (Map<String, Object> obj : list) {
                 User t = new User();
                 float id = Float.parseFloat(obj.get("id").toString());

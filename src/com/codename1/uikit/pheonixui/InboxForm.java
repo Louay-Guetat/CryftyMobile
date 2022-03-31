@@ -94,7 +94,7 @@ public class InboxForm extends BaseForm {
         addComponent(gui_Container_1);
 
         Container GroupsList = new Container(BoxLayout.y());
-        Container PrivateChatList = new Container(BoxLayout.y());
+       // Container PrivateChatList = new Container(BoxLayout.y());
         for (GroupChat c : GroupeService.getInstance().ListGroups(2))
         {
             MultiButton mb = new MultiButton(c.getNom());
@@ -125,12 +125,12 @@ public class InboxForm extends BaseForm {
             );
             GroupsList.add(mb);
             if(c.getOwner().substring(4,7).contains("2")){
-                gui_Container_2.getAllStyles().setMarginTop(20);
-                gui_Container_1.addComponent(com.codename1.ui.layouts.BorderLayout.EAST, gui_Container_2);
-                gui_Container_2.setName("Container_2");
+               /* gui_Container_2.getAllStyles().setMarginTop(20);
+               gui_Container_2.setName("Container_2");
                 gui_Container_2.addComponent(lsupp);
-
-           // GroupsList.add(lsupp);
+                gui_Container_1.addComponent(com.codename1.ui.layouts.BorderLayout.EAST,lsupp);
+*/
+            GroupsList.add(lsupp);
              }
             mb.setNameLine1("Label_3");
             mb.setUIIDLine2("Label");
@@ -139,23 +139,43 @@ public class InboxForm extends BaseForm {
 
         }
         ArrayList<User> users = GroupeService.getInstance().Listusers();
+
         for(int i=0; i<users.size();i++)
         {
             MultiButton mb =new MultiButton(users.get(i).getUsername());
 
             int finalI = i;
+            ArrayList<PrivateChat> usersContacter2=  PrivateChatService.getInstance().listPrivateChat(users.get(finalI).getId());
+            if(!usersContacter2.isEmpty())
+            {
+            for (Message msg : MessageService.getInstance().Listlastmsg(usersContacter2.get(0).getId()))
+            {
+                mb.setTextLine2(msg.getContenu());
+                System.out.println(msg.getContenu());
 
+            }}
             mb.addPointerPressedListener((e)->{
-                 PrivateChatService.getInstance().listPrivateChat(users.get(finalI).getId());
-                {
-                   // PrivateChat prv = new PrivateChat();
-                    //if (PrivateChatService.getInstance().AddPrivateChat(prv,users.get(finalI).getId()))
-                    {
-                     //   new ConversationForm(prv).show();
-                    }
-                }
 
+             ArrayList<PrivateChat> usersContacter=  PrivateChatService.getInstance().listPrivateChat(users.get(finalI).getId());
+
+            if(usersContacter.isEmpty())
+            {
+                PrivateChatService.getInstance().AddPrivateChat(users.get(finalI).getId());
+                new InboxForm();
+
+            }
+            else {
+              int Idprv=  usersContacter.get(0).getId();
+              String Senderprv=  usersContacter.get(0).getSender();
+              String Receivedprv=  usersContacter.get(0).getReceived();
+              System.out.println(Idprv);
+              System.out.println(Senderprv);
+              System.out.println(Senderprv);
+
+                new ConversationForm(usersContacter.get(0)).show();
+            }
             });
+
         //for (PrivateChat prv : PrivateChatService.getInstance().listPrivateChat(users.get(i).getId()))
         {
 

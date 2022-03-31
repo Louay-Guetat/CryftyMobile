@@ -86,8 +86,6 @@ public class PrivateChatService {
             JSONParser j = new JSONParser();
             Map<String, Object> tasksListJson
                     = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
-                System.out.println("gggg"+tasksListJson);
-
                 List<Map<String, Object>> list = (List<Map<String, Object>>) tasksListJson.get("root");
                 for (Map<String, Object> obj : list) {
                     PrivateChat t = new PrivateChat();
@@ -125,8 +123,9 @@ public class PrivateChatService {
         NetworkManager.getInstance().addToQueueAndWait(req);
         return Privatechat2;
     }
-    public boolean AddPrivateChat(PrivateChat prv, int idOtherUser) {
-        System.out.println(prv);
+    String jsonText;
+    public ArrayList<PrivateChat> AddPrivateChat( int idOtherUser) {
+
         System.out.println("********");
         String url = Statics.BASE_URL + "Addprivate/"+idOtherUser+"?CurrentUser=1";
         System.out.println("===>" + url);
@@ -137,11 +136,12 @@ public class PrivateChatService {
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
             public void actionPerformed(NetworkEvent evt) {
+
                 resultOK = req.getResponseCode() == 200; //Code HTTP 200 OK
                 req.removeResponseListener(this);
             }
         });
         NetworkManager.getInstance().addToQueueAndWait(req);
-        return resultOK;
+        return Privatechat2;
     }
 }
