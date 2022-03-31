@@ -192,9 +192,7 @@ public class Explore extends BaseForm {
 
             gui_Multi_Button_2.setUIID("Label");
             gui_Multi_Button_2.setName("Multi_Button_2");
-            System.out.println(nft.getPrice());
-
-//            gui_Multi_Button_2.setPropertyValue("line1", "" + nft.getPrice() +" "+ nft.getCurrency().getCoidCode());
+            gui_Multi_Button_2.setPropertyValue("line1", "" + nft.getPrice() +" "+ nft.getCurrency().getCoidCode());
             gui_Multi_Button_2.setPropertyValue("uiid1", "Label");
 
 

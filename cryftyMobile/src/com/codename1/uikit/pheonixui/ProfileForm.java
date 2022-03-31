@@ -21,6 +21,7 @@ public class ProfileForm extends BaseForm {
     public ProfileForm(Resources res) {
 
 
+        super(BoxLayout.y());
         Toolbar tb = getToolbar();
         tb.setTitleCentered(false);
         Image profilePic = res.getImage("back-logo.jpg");

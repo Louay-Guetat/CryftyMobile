@@ -92,12 +92,15 @@ public class BaseForm extends Form {
         });
 
         getToolbar().addCommandToSideMenu("Add NFT", trendingImage, e -> new AddNft(current).show());
+        getToolbar().addCommandToSideMenu("Reclamations", walletsImage, e -> new ListReclamationForm(res).show());
+        getToolbar().addCommandToSideMenu("Profil", walletsImage, e -> new ProfileForm(res).show());
+        getToolbar().addCommandToSideMenu("ADD Reclamation", walletsImage, e -> new AjoutReclamationForm(res).show());
         getToolbar().addCommandToSideMenu("Stats", statsImage, e -> new StatsForm(res).show());
         getToolbar().addCommandToSideMenu("Calendar", calendarImage, e -> new CalendarForm(res).show());
         getToolbar().addCommandToSideMenu("Map", null, e -> {});
-        getToolbar().addCommandToSideMenu("Trending", trendingImage, e -> new TrendingForm(res).show());
-        getToolbar().addCommandToSideMenu("Settings", null, e -> {});
         getToolbar().addCommandToSideMenu("Wallets", walletsImage, e -> new WalletsForm().show());
+        getToolbar().addCommandToSideMenu("Articles", trendingImage, e -> new TrendingForm(res).show());
+        getToolbar().addCommandToSideMenu("blogs BO", trendingImage, e -> new BOblogsForm(res).show());
 
         // spacer
         getToolbar().addComponentToSideMenu(new Label(" ", "SideCommand"));
