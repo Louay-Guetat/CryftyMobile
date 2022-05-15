@@ -98,7 +98,7 @@ public class AddGroupForm extends BaseForm {
                     }
                         GroupChat t = new GroupChat(listParticipants,String.valueOf(inputNom.getText()).toString());
                         if (GroupeService.getInstance().addGroup(t)) {
-                            //Dialog.show("Success", "Group created ", new Command("OK"));
+                            Dialog.show("Success", "Group created ", new Command("OK"));
                            new InboxForm().show();
 
                         } else {

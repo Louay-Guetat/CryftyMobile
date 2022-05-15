@@ -22,13 +22,13 @@ public class AfficheTransaction extends BaseForm{
         //sp.setText(ServiceTransaction.getInstance().getAllTransaction().toString());
         //add(sp);
         ArrayList<Transaction> tr=ServiceTransaction.getInstance().getAllTransaction();
-        String[] columnT={"Réf", "AddressWallet","Montant"};
+        String[] columnT={ "AddressWallet","Montant"};
         Object[][] rowt={};
         DefaultTableModel model =new DefaultTableModel(columnT,rowt);
         for(Transaction t:tr)
         {
             // total à modifier t.getCart2().getTotal()
-            model.addRow( t.getId(), t.getWallet().substring(23),total);
+            model.addRow(  t.getWallet().substring(23),total);
         }
         Table table = new Table(model);
         table.getAllStyles().setBgColor(0xeeeeee);

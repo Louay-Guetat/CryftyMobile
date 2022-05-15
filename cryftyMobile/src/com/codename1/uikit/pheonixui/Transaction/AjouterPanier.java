@@ -1,6 +1,7 @@
 package com.codename1.uikit.pheonixui.Transaction;
 
 
+import com.codename1.Services.ServiceCart;
 import com.codename1.Statics;
 import com.codename1.components.ImageViewer;
 import com.codename1.entities.Cart;
@@ -32,7 +33,7 @@ public class AjouterPanier extends BaseForm{
     public AjouterPanier(Form previous, Cart cart) {
         current=this;
 
-        if( cart.getNftProd().size() == 0) {
+        if( ServiceCart.getInstance().getAllNftFromCart().size() == 0) {
             getToolbar().setTitleComponent(
                     FlowLayout.encloseCenterMiddle(
                             new Label("Cart", "Title"),
@@ -45,7 +46,7 @@ public class AjouterPanier extends BaseForm{
             getToolbar().setTitleComponent(
                     FlowLayout.encloseCenterMiddle(
                             new Label("Cart", "Title"),
-                            new Label(String.valueOf(cart.getNftProd().size()), "InboxNumber")
+                            new Label(String.valueOf(ServiceCart.getInstance().getAllNftFromCart().size()), "InboxNumber")
                     )
             );
         }
@@ -53,7 +54,7 @@ public class AjouterPanier extends BaseForm{
         Object[][] rowt={};
         DefaultTableModel model =new DefaultTableModel(columnT,rowt);
         float total=0;
-        for (Nft nft : cart.getNftProd()) {
+        for (Nft nft : ServiceCart.getInstance().getAllNftFromCart()) {
             model.addRow( nft.getTitle(), nft.getDescription(),nft.getPrice() );
             total+=nft.getPrice();
         };
@@ -79,7 +80,7 @@ public class AjouterPanier extends BaseForm{
             }
         };
         add(table);
-        for (Nft nft : cart.getNftProd()) {
+        for (Nft nft : ServiceCart.getInstance().getAllNftFromCart()) {
             Container container =new Container(new BoxLayout(BoxLayout.X_AXIS));
             setScrollableY(true);
             setScrollVisible(false);
@@ -108,8 +109,10 @@ public class AjouterPanier extends BaseForm{
             myButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
-                    nfts.remove(nft);
-                    new AjouterPanier(current,cart).show();
+                    ServiceCart.getInstance().deleteNftFromCart(nft);
+                    System.out.println("supp");
+                    System.out.println(ServiceCart.getInstance().getCartClientConnecte().get(0));
+                    new AjouterPanier(current,ServiceCart.getInstance().getCartClientConnecte().get(0)).show();
                 }
             });
             container.add(myButton);
@@ -117,7 +120,7 @@ public class AjouterPanier extends BaseForm{
             add(container);
         };
         setLayout(BoxLayout.y());
-        if (cart.getNftProd().size() == 0 )
+        if (ServiceCart.getInstance().getAllNftFromCart().size() == 0 )
         {
             Button aj=new Button("Fill your cart >> ");
             aj.addActionListener(e -> new Explore(current).show());
@@ -132,7 +135,7 @@ public class AjouterPanier extends BaseForm{
 
             Button payer=new Button("PROCEED TO PAYMENT WITH WALLET >>");
             float finalTotal = total;
-            payer.addActionListener((e)-> new AjoutTransactionWallet(current, cart, finalTotal).show());
+            payer.addActionListener((e)-> new AjoutTransactionWallet(current, ServiceCart.getInstance().getCartClientConnecte().get(0), finalTotal).show());
             add(payer);
         }
 

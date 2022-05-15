@@ -36,13 +36,12 @@ public class AjoutTransactionWallet extends BaseForm {
             w=wallet.toString();
             c.addItem(w);
         }
-        System.out.println(idCart.toString());
         payer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
 
-                    Transaction t = new Transaction( c.getSelectedItem().toString().substring(35),idCart.toString().substring(8,9));
+                    Transaction t = new Transaction( c.getSelectedItem().toString().substring(35),idCart.getId());
                     if( ServiceTransaction.getInstance().addTransaction(t,total))
                     {
                         Dialog.show("Success","Paiement réussi ",new Command("OK"));

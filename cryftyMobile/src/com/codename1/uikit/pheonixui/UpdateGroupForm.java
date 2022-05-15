@@ -69,7 +69,7 @@ public class UpdateGroupForm extends BaseForm{
                     }
                     GroupChat t = new GroupChat(listParticipants,String.valueOf(inputNom.getText()).toString());
                     if (GroupeService.getInstance().UpdateGroup(t,c.getId())) {
-                        //Dialog.show("Success", "Group created ", new Command("OK"));
+                        Dialog.show("Success", "Group updated ", new Command("OK"));
                         new InboxForm().show();
 
                     } else {

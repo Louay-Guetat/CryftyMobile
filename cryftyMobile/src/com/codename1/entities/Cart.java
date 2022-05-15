@@ -2,14 +2,18 @@
 package com.codename1.entities;
 
 import com.codename1.entities.Nft;
+import com.codename1.io.Data;
 import com.codename1.io.Preferences;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Cart {
     private int id= Integer.parseInt(Preferences.get("id", "1"));
     private ArrayList<Nft> nftProd;
     private float total=0;
+    private String dateCreation;
+
 
     public Cart() {
     }
@@ -39,6 +43,13 @@ public class Cart {
 
     public ArrayList<Nft> getNftProd() {
         return nftProd;
+    }
+    public String getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(String dateCreation) {
+        this.dateCreation = dateCreation;
     }
 
     public void setNftProd(ArrayList<Nft> nftProd) {

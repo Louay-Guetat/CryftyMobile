@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 
+
 public class ServiceTransaction {
 
     public ArrayList<Transaction> transaction;
@@ -107,7 +108,6 @@ public class ServiceTransaction {
         });
         NetworkManager.getInstance().addToQueueAndWait(req);
         return transaction;
-
     }
 
 
@@ -145,7 +145,6 @@ public class ServiceTransaction {
         //String url = Statics.BASE_URL+"/tasks/";
         String url = Statics.BASE_URL+ "/afficheTransactionWalletTest?clientWallet="+ Preferences.get("id", "1");;
         System.out.println("===>"+url);
-        //req.addArgument("clientWallet", 3+"");
         req.setUrl(url);
         req.setPost(false);
         req.addResponseListener(new ActionListener<NetworkEvent>() {

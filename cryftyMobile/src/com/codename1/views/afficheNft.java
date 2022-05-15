@@ -5,6 +5,7 @@
  */
 package com.codename1.views;
 
+import com.codename1.Services.ServiceCart;
 import com.codename1.Statics;
 import com.codename1.components.InfiniteProgress;
 import com.codename1.components.MultiButton;
@@ -244,13 +245,16 @@ public class afficheNft extends BaseForm {
         btnPanier.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                if (cart.getNftProd().contains(nft)) {
+                if (ServiceCart.getInstance().getAllNftFromCart().contains(nft)) {
                     Dialog.show("Error","NFT déja existe ",new Command("OK"));
                     new Explore(current).show();
                 }
                 else {
-                    cart.getNftProd().add(nft);
-                    new AjouterPanier(current, cart).show();
+                    ServiceCart.getInstance().addNftToCart(nft);
+                    for (int i=0;i<ServiceCart.getInstance().getCartClientConnecte().size();i++)
+                    {
+                        new AjouterPanier(current, ServiceCart.getInstance().getCartClientConnecte().get(i)).show();
+                    }
                 }
             }
         });

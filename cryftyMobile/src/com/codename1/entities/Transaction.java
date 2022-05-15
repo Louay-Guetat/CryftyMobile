@@ -4,12 +4,12 @@ public class Transaction {
     private int id;
     private String wallet;
     private String cart;
-    private Cart cart2;
+    private int cart2;
 
     public Transaction() {
     }
 
-    public Transaction(String wallet, Cart cart2) {
+    public Transaction(String wallet, int cart2) {
         this.wallet = wallet;
         this.cart2 = cart2;
     }
@@ -21,15 +21,17 @@ public class Transaction {
     }
 
 
+
+
     public Transaction(String wallet) {
         this.wallet = wallet;
     }
 
-    public Cart getCart2() {
+    public int getCart2() {
         return cart2;
     }
 
-    public void setCart2(Cart cart2) {
+    public void setCart2(int cart2) {
         this.cart2 = cart2;
     }
 

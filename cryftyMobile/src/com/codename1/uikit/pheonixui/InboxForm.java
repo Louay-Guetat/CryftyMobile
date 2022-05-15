@@ -29,6 +29,7 @@ import com.codename1.ui.*;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.geom.Rectangle;
+import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
@@ -111,7 +112,7 @@ public class InboxForm extends BaseForm {
             supprimerStyle.setFgColor(0xf21f1f);
             FontImage supprimerImage =FontImage.createMaterial(FontImage.MATERIAL_DELETE,supprimerStyle);
             lsupp.setIcon(supprimerImage);
-            lsupp.setTextPosition(RIGHT);
+
             lsupp.addActionListener((e) -> {
                 Dialog diag = new Dialog("suppression");
                 if(diag.show("suppression","Vous voulez supprimer ce group?","Annuler","Oui"))
@@ -132,6 +133,7 @@ public class InboxForm extends BaseForm {
                 gui_Container_2.addComponent(lsupp);
                 gui_Container_1.addComponent(com.codename1.ui.layouts.BorderLayout.EAST,lsupp);
 */
+                lsupp.getAllStyles().setMarginLeft(930);
                 GroupsList.add(lsupp);
             }
             mb.setNameLine1("Label_3");
@@ -178,17 +180,8 @@ public class InboxForm extends BaseForm {
                 }
             });
 
-            //for (PrivateChat prv : PrivateChatService.getInstance().listPrivateChat(users.get(i).getId()))
             {
-
                 {
-
-                    // System.out.println(prv);
-                    //   mb.addPointerPressedListener(e -> new ConversationForm(prv).show());
-               /* for (Message msg : MessageService.getInstance().Listlastmsg(prv.getId()))
-                {
-                    mb.setTextLine2(msg.getContenu());
-                }*/
                     GroupsList.add(mb);
                     mb.setNameLine1("Label_3");
                     mb.setUIIDLine2("Label");

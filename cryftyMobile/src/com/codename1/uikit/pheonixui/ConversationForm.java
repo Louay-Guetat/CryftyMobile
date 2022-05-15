@@ -33,7 +33,7 @@ import static com.codename1.charts.util.ColorUtil.BLUE;
 
 
 public class ConversationForm extends BaseForm {
-Form current;
+    Form current;
     String TabUsername [];
     int i=0;
     public ConversationForm( Conversation c) {
@@ -45,54 +45,68 @@ Form current;
 
 
             Button lsupp = new Button("");
-            lsupp.setUIID("Container");
+            lsupp.setUIID("Container2");
             Style supprimerStyle = new Style(lsupp.getUnselectedStyle());
             supprimerStyle.setFgColor(0xf21f1f);
             FontImage supprimerImage = FontImage.createMaterial(FontImage.MATERIAL_DELETE, supprimerStyle);
             lsupp.setIcon(supprimerImage);
-            lsupp.getAllStyles().setMarginLeft(450);
-            //  lsupp.setTextPosition(RIGHT);
-            lsupp.addActionListener((e) -> {
+            String datetime = message.getCreatedAt();
+            String date = datetime.substring(0, 10);
+            String time = datetime.substring(11, 19);
+            lsupp.getAllStyles().setMarginLeft(900);
+            gui_Multi_Button_1.setName("Multi_Button_1");
+            gui_Multi_Button_1.setPropertyValue("line3", "" + date.concat(" " + time));
+            gui_Multi_Button_1.setPropertyValue("line2", "" + message.getContenu());
+
+            gui_Multi_Button_1.setPropertyValue("uiid1", "Label_1");
+            gui_Multi_Button_1.setPropertyValue("uiid2", "Label_1");
+            gui_Multi_Button_1.setPropertyValue("uiid3", "Label_1");
+
+
+            MessagesList.setName("Container_1");
+            if (message.getSender().substring(4, 7).contains(Preferences.get("id","1"))) {
+                gui_Multi_Button_1.setPropertyValue("line1", "You" );
+
+                lsupp.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        System.out.println("afiiche button");
                         Dialog diag = new Dialog("suppression");
-                        if (diag.show("suppression", "Vous voulez supprimer ce message?", "Annuler", "Oui")) {
+                        if(diag.show("suppression","Are you sur to delete your message?","Cancel","Yes"))
+                        {
                             diag.dispose();
-                        } else {
+                        }else{
                             diag.dispose();
                             if (MessageService.getInstance().deleteMsg(message.getId())) {
                                 new ConversationForm(c).show();
                             }
-
-                        }
-                    }
-            );
-
-
-            String datetime = message.getCreatedAt();
-            String date = datetime.substring(0, 10);
-            String time = datetime.substring(11, 19);
-            //gui_Multi_Button_1.setUIID("Label");
-            //MessagesList.getAllStyles().getBorder();
-
-            gui_Multi_Button_1.setName("Multi_Button_1");
-
-            gui_Multi_Button_1.setPropertyValue("line1", "" + date.concat(" " + time));
-            gui_Multi_Button_1.setPropertyValue("line2", "" + message.getSender().substring(18, message.getSender().length() - 1));
-            gui_Multi_Button_1.setPropertyValue("line3", "" + message.getContenu());
-            gui_Multi_Button_1.setPropertyValue("uiid1", "Label");
-            gui_Multi_Button_1.setPropertyValue("uiid2", "Label");
-            gui_Multi_Button_1.setPropertyValue("uiid3", "Label");
-
-            addComponent(MessagesList);
-            MessagesList.getAllStyles().setBgColor(0xeeeeee);
-            MessagesList.setName("Container_1");
-            if (message.getSender().substring(4, 7).contains(Preferences.get("id","1"))) {
+                        }}
+                });
+                MessagesList.add(BorderLayout.SOUTH,lsupp );
                 MessagesList.addComponent(BorderLayout.EAST, gui_Multi_Button_1);
-                MessagesList.addComponent(BorderLayout.SOUTH, lsupp);
+
+                Stroke borderStroke = new Stroke(2, Stroke.CAP_SQUARE, Stroke.JOIN_MITER, 1);
+                gui_Multi_Button_1.getAllStyles().setBorder(RoundBorder.create().
+                        rectangle(true).
+                        color(0x2671ff).
+                        strokeColor(0).
+                        strokeOpacity(20).
+                        stroke(borderStroke));
+
             } else {
+                gui_Multi_Button_1.setPropertyValue("line1", "" + message.getSender().substring(18, message.getSender().length() - 1));
+
                 MessagesList.addComponent(BorderLayout.WEST, gui_Multi_Button_1);
+                Stroke borderStroke = new Stroke(2, Stroke.CAP_SQUARE, Stroke.JOIN_MITER, 1);
+                gui_Multi_Button_1.getAllStyles().setBorder(RoundBorder.create().
+                        rectangle(true).
+                        color(0xffffff).
+                        strokeColor(0).
+                        strokeOpacity(20).
+                        stroke(borderStroke));
             }
-
-
+            addComponent(MessagesList);
         }
         Container addMessageContainer = new Container(new BorderLayout());
         setLayout(BoxLayout.yLast());
@@ -142,43 +156,43 @@ Form current;
                 System.out.println(((GroupChat) c).getOwner());
                 getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_EDIT, e -> {
 
-                   new UpdateGroupForm(c).show();
+                    new UpdateGroupForm(c).show();
                 });
 
             }
-                    getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_PEOPLE, e -> {
+            getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_PEOPLE, e -> {
 
-                        MySheet sheet = new MySheet(null, c.getId());
+                MySheet sheet = new MySheet(null, c.getId());
 
-                        sheet.show();
-                    });
+                sheet.show();
+            });
 
+        } else {
+
+            PrivateChat p = (PrivateChat) c;
+            String idReceived = p.getReceived().substring(4, 7);
+            String idSender = p.getSender().substring(4, 7);
+            System.out.println(idReceived);
+            System.out.println(idSender);
+            if (idReceived.contains(Preferences.get("id","1"))) {
+                getToolbar().setTitleComponent(
+                        FlowLayout.encloseCenterMiddle(
+                                new Label(p.getSender().substring(18, p.getSender().length() - 1) + "", "Title")
+                                //new Label("19", "InboxNumber")
+                        )
+                );
             } else {
-
-                PrivateChat p = (PrivateChat) c;
-                String idReceived = p.getReceived().substring(4, 7);
-                String idSender = p.getSender().substring(4, 7);
-                System.out.println(idReceived);
-                System.out.println(idSender);
-                if (idReceived.contains(Preferences.get("id","1"))) {
-                    getToolbar().setTitleComponent(
-                            FlowLayout.encloseCenterMiddle(
-                                    new Label(p.getSender().substring(18, p.getSender().length() - 1) + "", "Title")
-                                    //new Label("19", "InboxNumber")
-                            )
-                    );
-                } else {
-                    getToolbar().setTitleComponent(
-                            FlowLayout.encloseCenterMiddle(
-                                    new Label(p.getReceived().substring(18, p.getReceived().length() - 1) + "", "Title")
-                                    //new Label("19", "InboxNumber")
-                            )
-                    );
-                }
-
+                getToolbar().setTitleComponent(
+                        FlowLayout.encloseCenterMiddle(
+                                new Label(p.getReceived().substring(18, p.getReceived().length() - 1) + "", "Title")
+                                //new Label("19", "InboxNumber")
+                        )
+                );
             }
 
-            getToolbar().setBackCommand("", e -> new InboxForm().show());
-
         }
+
+        getToolbar().setBackCommand("", e -> new InboxForm().show());
+
     }
+}
